@@ -1,0 +1,49 @@
+@keyframes show-toast {
+    0% {
+        bottom: -100%
+    }
+    20% {
+        bottom: 100px
+    }
+    80% {
+        bottom: 100px
+    }
+    100% {
+        bottom: -100%
+    }
+}
+
+.show-notification {
+    position: fixed;
+    bottom: 100%;
+    right: 20px;
+    animation-name: show-toast;
+    animation-duration: 8s;
+    z-index: 99;
+}
+
+.log-reg-div {
+    margin-top: 10px;
+    font-size: 16px;
+    position: relative;
+    bottom: 48px;
+    left: 290px;
+}
+
+.log-reg {
+    color: rgba(0, 0, 0, 0.64);
+}
+
+.log-reg:hover {
+    color: rgba(0, 0, 0);
+    font-weight: bold;
+}
+
+.logo-home {
+    margin-top: 12px;
+}
+
+#forgot-pass {
+    position: relative;
+    left: 500px;
+}
