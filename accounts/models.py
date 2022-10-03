@@ -50,6 +50,7 @@ class UserProfile(models.Model):
     about = models.TextField(max_length=500, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='users/profile_pictures', blank=True, null=True)
     cover_photo = models.ImageField(upload_to='users/cover_photos', blank=True, null=True)
+    info_font_color = models.CharField(max_length=15, blank=True)
     address = models.CharField(max_length=250, blank=True, null=True)
     country = models.CharField(max_length=15, blank=True, null=True)
     state = models.CharField(max_length=15, blank=True, null=True)
@@ -62,3 +63,19 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.email
+
+
+class Subscriber(models.Model):
+    email = models.EmailField(unique=True, null=True)
+    data_joined = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email
+
+
+class NewsletterEmail(models.Model):
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+
+    def __str__(self):
+        return self.title

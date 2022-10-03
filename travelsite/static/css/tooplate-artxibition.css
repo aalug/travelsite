@@ -1381,7 +1381,7 @@ Rent Venue Page
   background-image: url(../images/rent_venue_bg.jpg);
   background-size: cover;
   background-repeat: no-repeat;
-  padding: 110px 0px;
+  padding: 110px 0;
   text-align: center;
 }
 

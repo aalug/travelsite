@@ -26,7 +26,7 @@
     margin-top: 10px;
     font-size: 16px;
     position: relative;
-    bottom: 48px;
+    bottom: 55px;
     left: 290px;
 }
 
@@ -46,4 +46,21 @@
 #forgot-pass {
     position: relative;
     left: 500px;
+}
+
+#id_cover_photo, #id_profile_picture {
+    height: 48px;
+}
+
+.profile-info img {
+    position: relative;
+    left: 50px;
+    top: 70px;
+    border-radius: 2%;
+    width: 140px;
+    height: 140px;
+}
+
+#id_content {
+    height: 700px;
 }

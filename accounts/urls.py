@@ -12,6 +12,8 @@ urlpatterns = [
     path('reset-password-validate/<uidb64>/<token>', views.ResetPasswordValidateView.as_view(),
          name='reset-password-validate'),
     path('reset-password/', views.ResetPasswordView.as_view(), name='reset-password'),
+    path('subscribe-to-newsletter/', views.SubscribeToNewsletterView.as_view(), name='sub-newsletter'),
+    path('newsletter/', views.SendNewsletterView.as_view(), name='newsletter'),
 
 ]
 

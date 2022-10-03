@@ -46,3 +46,5 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.UserProfile)
+admin.site.register(models.Subscriber)
+admin.site.register(models.NewsletterEmail)

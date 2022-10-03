@@ -14,7 +14,7 @@
                         <h4>Registration</h4>
                     </div>
                     <div class="contact-form">
-                        <form id="contact" action="{% url "register-user" %}" method="post">
+                        <form id="contact" action="{% url 'register-user' %}" method="post">
                             {% csrf_token %}
                             <div class="row">
                                 {% for field in form %}

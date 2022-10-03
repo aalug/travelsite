@@ -6,5 +6,196 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Dashboard</h1>
+    <!-- ***** Dashboard content ***** -->
+    <div class="page-heading-rent-venue" style="background-image: url(
+            {% if user.user_profile.cover_photo %}
+                {{ user.user_profile.cover_photo.url }}
+            {% else %}
+                {% static 'images/default_cover_photo.jpg' %}
+            {% endif %}
+            );">
+        <div class=" container">
+            <div class="row profile-info">
+                <img src="{{ user.user_profile.profile_picture.url }}" alt="">
+                <div class="col-lg-12">
+                    <h2 style="color: {{ user.user_profile.info_font_color }};">{{ user.username }}</h2>
+                    <span style="color: {{ user.user_profile.info_font_color }};">{% if user.user_profile.about %}
+                        {{ user.user_profile.about }}
+                    {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rent-venue-tabs">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="row" id="tabs">
+                        <div class="col-lg-12">
+                            <div class="heading-tabs">
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <ul>
+                                            <li><a href='#tabs-1'>My purchases</a></li>
+                                            <li><a href='#tabs-2'>My trips</a></li>
+                                            <li><a href='#tabs-3'>My forum posts</a></li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <section class='tabs-content'>
+                                <article id='tabs-1'>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="right-content">
+                                                <h4>What You bought in our store:</h4>
+                                                <p>List of products<br>
+                                                    that I bought<br>
+                                                    in this store</p>
+                                                <hr>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </article>
+                                <article id='tabs-2'>
+                                    <div class="row">
+                                        <div class="col-lg-9">
+                                            <div class="right-content">
+                                                <h4>Radio City Musical Hall</h4>
+                                                <p> Aliquam tempor, purus vitae ullamcorper rhoncus, quam nunc imperdiet
+                                                    sem, sed placerat purus dui in lorem. Donec ornare at risus in
+                                                    varius. In at magna ante. Curabitur at metus sed purus pretium
+                                                    ullamcorper. Cras vitae sapien bibendum urna pulvinar faucibus.
+                                                    Aliquam sed dui in orci tincidunt cursus quis non tellus. Vestibulum
+                                                    a placerat ex, ac cursus dui.</p>
+                                                <hr>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                                <article id='tabs-3'>
+                                    <div class="row">
+                                        <div class="col-lg-9">
+                                            <div class="right-content">
+                                                <h4>Royce Hall</h4>
+                                                <p> Maecenas ut pharetra felis. Interdum et malesuada fames ac ante
+                                                    ipsum primis in faucibus. Sed ut nisi quis tellus vulputate posuere.
+                                                    Aenean consectetur quam et quam fringilla, nec aliquam diam congue.
+                                                    Nulla dui arcu, aliquam sed mattis non, euismod vitae libero. </p>
+                                                <hr>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rent-venue-application">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="heading-text">
+                        <h4>Edit your account details</h4>
+                    </div>
+                    <div class="contact-form">
+                        <form id="contact" action="{% url 'dashboard' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row">
+
+                                <div class="col-md-12 col-sm-12">
+                                    <fieldset>
+                                        <label>Tell us something about yourself:</label>
+                                        {{ profile_form.about }}
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-10 col-sm-12">
+                                    <fieldset>
+                                        <label>Your Address:</label>
+                                        {{ profile_form.address }}
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-2 col-sm-12">
+                                    <fieldset>
+                                        <label style="text-align: center;" for="colorpicker">Choose color of the info
+                                            text above:</label>
+                                        <input name='font-color' type="color" id="colorpicker"
+                                               value="{{ user.user_profile.info_font_color }}">
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-5 col-sm-12 mb-3">
+                                    <fieldset>
+                                        <label for="id_profile_picture">Profile picture:</label>
+                                        {{ profile_form.profile_picture }}
+                                    </fieldset>
+                                </div>
+
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset>
+                                        <label for="id_cover_photo">Cover photo:</label>
+                                        {{ profile_form.cover_photo }}
+                                    </fieldset>
+                                </div>
+
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset>
+                                        <label>Country:</label>
+                                        {{ profile_form.country }}
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset>
+                                        <label>State:</label>
+                                        {{ profile_form.state }}
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset>
+                                        <label>City:</label>
+                                        {{ profile_form.city }}
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset>
+                                        <label>Pin code:</label>
+                                        {{ profile_form.pin_code }}
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset>
+                                        <label>Latitude:</label>
+                                        {{ profile_form.latitude }}
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset>
+                                        <label>Longitude:</label>
+                                        {{ profile_form.longitude }}
+                                    </fieldset>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <fieldset>
+                                        <button type="submit" id="form-submit" class="main-dark-button">Submit</button>
+                                    </fieldset>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br><br>
+
+
 {% endblock %}

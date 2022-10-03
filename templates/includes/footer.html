@@ -1,3 +1,4 @@
+{% load static %}
 <!-- *** Footer *** -->
 <footer>
     <div class="container">
@@ -49,12 +50,13 @@
                 <div class="sub-footer">
                     <div class="row">
                         <div class="col-lg-3">
-                            <div class="logo"><span>Art<em>Xibition</em></span></div>
+                            <div><a href="{% url 'home' %}" class="logo-home"><img class="logo-home" src="{% static 'images/logo.png' %}" alt=""></a>
+</div>
                         </div>
                         <div class="col-lg-6">
                             <div class="menu">
                                 <ul>
-                                    <li><a href="index.html" class="active">Home</a></li>
+                                    <li><a href="{% url 'home' %}">Home</a></li>
                                     <li><a href="about.html">About Us</a></li>
                                     <li><a href="rent-venue.html">Rent Venue</a></li>
                                     <li><a href="shows-events.html">Shows & Events</a></li>
