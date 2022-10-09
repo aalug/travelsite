@@ -4,11 +4,11 @@ services:
   db:
     image: postgres
     environment:
-      - POSTGRES_DB=devdatabase
+      - POSTGRES_DB=devdb
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=devpassword
     ports:
-      - "5433:5433"
+      - "5432:5432"
   web:
     build: .
     command: >

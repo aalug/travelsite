@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Messages to staff
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row msg-table">
+            {% if messages %}
+                <table class="table table-hover">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">From</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Subject</th>
+                        <th scope="col">Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for message in messages %}
+                        <tr class="msg-links">
+                            <td><a href="#">{{ message.email }}</a></td>
+                            <td><a href="#">{{ message.username }}</a></td>
+                            <td><a href="#">{{ message.subject }}</a></td>
+                            <td><a href="#">{{ message.date }}</a></td>
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                    {% endif %}
+                        <span class="current">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    </span>
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}">next</a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+
+            {% else %}
+                <h3>No messages</h3>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+

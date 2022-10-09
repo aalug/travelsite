@@ -14,7 +14,6 @@ from accounts.models import Subscriber
 def detect_user_type(user):
     """Helper function for checking the role
        of the user and returns appropriate path."""
-
     if user.is_staff:
         return '/admin'
     else:
@@ -23,7 +22,6 @@ def detect_user_type(user):
 
 def send_verification_email(request, user, mail_subject, email_template):
     """Helper function for sending verification emails to newly registered users."""
-
     from_email = settings.DEFAULT_FROM_EMAIL
     current_site = get_current_site(request)
     message = render_to_string(email_template, {
@@ -40,7 +38,6 @@ def send_verification_email(request, user, mail_subject, email_template):
 def send_confirmation_email(to_email, mail_subject, email_template):
     """Helper function for sending emails with confirmation,
        for example confirming changing the password."""
-
     from_email = settings.DEFAULT_FROM_EMAIL
     message = render_to_string(email_template)
     mail = EmailMessage(mail_subject, message, from_email, to=[to_email])
@@ -50,7 +47,6 @@ def send_confirmation_email(to_email, mail_subject, email_template):
 def send_newsletter(title, content, email_template):
     """Helper function  for sending newsletter emails. Gets from_email
        and emails from all subscribers."""
-
     from_email = settings.DEFAULT_FROM_EMAIL
     to_emails = list(Subscriber.objects.all().values_list('email', flat=True))
     message = render_to_string(email_template, {

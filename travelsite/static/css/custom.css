@@ -56,11 +56,55 @@
     position: relative;
     left: 50px;
     top: 70px;
-    border-radius: 2%;
+    border-radius: 5%;
     width: 140px;
     height: 140px;
 }
 
 #id_content {
     height: 700px;
+    line-height: 1.8;
+    padding: 14px 22px;
+}
+
+.text-about p {
+    padding: 20px;
+    font-size: 14px;
+}
+
+.text-about i {
+    font-size: 16px;
+    margin-right: 12px;
+}
+
+#id_message {
+    height: 300px;
+    line-height: 1.8;
+    padding: 14px 22px;
+}
+
+.msg-table {
+    margin: 80px 0;
+}
+.msg-table h3 {
+    text-align: center;
+}
+
+.pagination {
+    border: solid 1px rgba(12, 84, 96, 0.55);
+    padding: 5px;
+}
+
+.step-links a {
+    padding: 5px;
+}
+
+.msg-links a {
+    display: block;
+    color: #373737;
+}
+
+.chat-with-us {
+    position: relative;
+    left: 600px;
 }

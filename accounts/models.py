@@ -7,7 +7,7 @@ from django.db.models import OneToOneField
 class UserManager(BaseUserManager):
     """Manager for users."""
 
-    def create_user(self, email, username, password=None,**extra_fields):
+    def create_user(self, email, username, password=None, **extra_fields):
         """Create, save and return a new user."""
         if not email:
             raise ValueError('User must have an email address.')
@@ -74,8 +74,26 @@ class Subscriber(models.Model):
 
 
 class NewsletterEmail(models.Model):
+    """Model for storing already sent newsletter messages."""
     title = models.CharField(max_length=255)
     content = models.TextField()
 
     def __str__(self):
         return self.title
+
+
+class MessageToStaff(models.Model):
+    """Model for storing messages that visitors/ users
+       leave at "about us" page."""
+    subject = models.CharField(max_length=100)
+    username = models.CharField(max_length=100)
+    email = models.EmailField()
+    content = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Messages to staff"
+        ordering = ['-date']
+
+    def __str__(self):
+        return f'{self.username}: {self.subject}'

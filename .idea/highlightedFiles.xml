@@ -3,6 +3,11 @@
   <component name="ProjectTreeColorHighlighter">
     <files>
       <node color="8" path="$PROJECT_DIR$/accounts" />
+      <node color="4" path="$PROJECT_DIR$/chat" />
+      <node color="4" path="$PROJECT_DIR$/chats" />
+      <node color="8" path="$PROJECT_DIR$/templates/accounts" />
+      <node color="4" path="$PROJECT_DIR$/templates/chat" />
+      <node color="4" path="$PROJECT_DIR$/templates/chats" />
     </files>
     <colors>
       <color id="1" value="#4f060d51" name="Color 1" enabled="true" />

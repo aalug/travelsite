@@ -1,0 +1,109 @@
+
+.bubbleWrapper {
+    padding: 10px 10px;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    align-self: flex-end;
+    color: #fff;
+}
+
+.inlineContainer {
+    display: inline-flex;
+}
+
+.inlineContainer.own {
+    flex-direction: row-reverse;
+}
+
+.inlineIcon {
+    width: 20px;
+    object-fit: contain;
+}
+
+.ownBubble {
+    min-width: 60px;
+    max-width: 700px;
+    padding: 14px 18px;
+    margin: 6px 8px;
+    background-color: #5b5377;
+    border-radius: 16px 16px 0 16px;
+    border: 1px solid #443f56;
+
+}
+
+.otherBubble {
+    min-width: 60px;
+    max-width: 700px;
+    padding: 14px 18px;
+    margin: 6px 8px;
+    background-color: #6C8EA4;
+    border-radius: 16px 16px 16px 0;
+    border: 1px solid #54788e;
+}
+
+.own {
+    align-self: flex-end;
+}
+
+.other {
+    align-self: flex-start;
+}
+
+span.own,
+span.other {
+    font-size: 14px;
+    color: grey;
+}
+
+.main-msg-container {
+    background-color: rgba(5, 5, 5, 0.02);
+    border: solid 1px rgba(15, 15, 15, 0.15);
+    border-radius: 3px;
+    padding: 60px 30px 220px 30px;
+    margin: 60px auto 170px auto;
+    width: 50%;
+}
+
+.msg-input {
+    padding-top: 80px;
+    margin-right: 20px;
+}
+
+.msg-input input {
+    width: 600px;
+    height: 200%;
+}
+
+#chat-message-submit {
+    width: 130px;
+    height: 38px;
+    border: none;
+    border-radius: 3px;
+    background-color: rgba(4, 120, 118, 0.92);
+    color: white;
+}
+
+#chat-message-submit:hover {
+    background-color: white;
+    border: solid 1px;
+    color: rgba(4, 120, 118, 0.92);
+}
+
+.left-date {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+.msg-author {
+    font-size: 18px;
+    font-weight: 400;
+    color: grey;
+    margin-left: 20px;
+}
+
+.chat-title {
+    text-align: center;
+    margin-top: 100px;
+    margin-bottom: 15px;
+}

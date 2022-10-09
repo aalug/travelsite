@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    About us
+{% endblock %}
+
+{% block content %}
+    <div class="page-heading-about" style="background-image: url({% static 'images/plane_bg.jpg' %});">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="multicolortext">Who are we?</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-item">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="left-image">
+                        <img src="{% static 'images/map_img.jpg' %}" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="right-content">
+                        <div class="about-map-image">
+                            <img src="{% static 'images/road_car_img.png' %}" alt="">
+                        </div>
+                        <div class="down-content">
+                            <h4>Radio City Musical Hall</h4>
+                            <ul>
+                                <li>August 24 Friday</li>
+                                <li>09:30 AM - 07:00 PM</li>
+                            </ul>
+                            <span>Tickets Starting From $34.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-upcoming-shows">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9">
+                    <h2>Something about us ;)</h2>
+                    <hr>
+                    <h4>This is a fake website that fake-offers things like: </h4>
+                    <p class="text-about">
+                        <i class="fa fa-compass" aria-hidden="true"></i>Trips to various countries<br>
+                        <i class="fa fa-shopping-cart" aria-hidden="true"></i>Shop, where you can buy many things
+                        that you will need at your next trip<br>
+                        <i class="fa fa-picture-o" aria-hidden="true"></i>Blog about travel<br>
+                        <i class="fa fa-comments" aria-hidden="true"></i>Forum for travellers<br>
+                        <i class="fa fa-laptop" aria-hidden="true"></i>API - for developers<br>
+                    </p><br><br>
+                    <h3>It was build as a Django project.</h3>
+
+                </div>
+                <div class="col-lg-3">
+                    <div class="next-shows" style="background-color:red;">
+                        <h4><i class="fa fa-clock-o"></i> TODO =====Get Our Latest Trips</h4>
+                        <ul>
+                            <li>
+                                <h5>Copacabana Festival</h5>
+                                <span>Sep 24 Fri<br>08:30 AM - 11:00 PM</span>
+                                <div class="icon-button">
+                                    <a href="ticket-details.html">
+                                        <i class="fa fa-shopping-cart"></i>
+                                    </a>
+                                </div>
+                            </li>
+                            <li>
+                                <h5>Rock Music Festival</h5>
+                                <span>Sep 22 Wed<br>11:00 AM - 09:00 PM</span>
+                                <div class="icon-button">
+                                    <a href="ticket-details.html">
+                                        <i class="fa fa-shopping-cart"></i>
+                                    </a>
+                                </div>
+                            </li>
+                            <li>
+                                <h5>Water Splash Festival</h5>
+                                <span>July 18 Friday<br>10:00 AM - 11:00 PM</span>
+                                <div class="icon-button">
+                                    <a href="ticket-details.html">
+                                        <i class="fa fa-shopping-cart"></i>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="also-like">
+        <div class="container">
+            <div class="row">
+                <div class="rent-venue-application ">
+                    <div class="col-lg-12">
+                        <h2 style="margin-bottom: 40px;">Contact us</h2>
+                    </div>
+                    <div class="col-lg-12">
+                        <h3>Send us a message</h3>
+                        <a class="chat-with-us" href="
+                        {% if request.user.is_authenticated %}
+                            {% url 'chat-with-support' room_name %}
+                        {% else %}
+                            {% url 'login' %}
+                        {% endif %}
+                            ">
+                            <h3><i class="fa fa-comments" aria-hidden="true"></i> or chat with us</h3>
+                        </a>
+                    </div>
+                    <div class="container ">
+                        <div class="row">
+                            <div class="col-lg-10">
+                                <div class="like-item">
+                                    <div class="contact-form">
+                                        <form id="contact" action="{% url "about-us" %}" method="post">
+                                            {% csrf_token %}
+                                            <div class="row">
+                                                <div class="col-md-12 col-sm-12">
+                                                    <fieldset>
+                                                        <label>Subject:</label>
+                                                        {{ form.subject }}
+                                                    </fieldset>
+                                                    {% if form.subject.errors %}
+                                                        {% for error in form.subject.errors %}
+                                                            <label style="color: red;">{{ error }}</label>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <fieldset>
+                                                        <label>Your name:</label>
+                                                        {{ form.username }}
+                                                    </fieldset>
+                                                    {% if form.username.errors %}
+                                                        {% for error in form.username.errors %}
+                                                            <label style="color: red;">{{ error }}</label>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </div>
+
+                                                <div class="col-md-12 col-sm-12">
+                                                    <fieldset>
+                                                        <label>Your email address:</label>
+                                                        {{ form.email }}
+                                                    </fieldset>
+                                                    {% if form.email.errors %}
+                                                        {% for error in form.email.errors %}
+                                                            <label style="color: red;">{{ error }}</label>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-12 col-sm-12">
+                                                    <fieldset>
+                                                        <label>Message:</label>
+                                                        {{ form.content }}
+                                                    </fieldset>
+                                                    {% if form.content.errors %}
+                                                        {% for error in form.content.errors %}
+                                                            <label style="color: red;">{{ error }}</label>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </div>
+
+                                                <div class="col-lg-12">
+                                                    <fieldset>
+                                                        <button type="submit" id="form-submit" class="main-dark-button">
+                                                            Send
+                                                        </button>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

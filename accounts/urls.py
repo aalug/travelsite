@@ -14,6 +14,8 @@ urlpatterns = [
     path('reset-password/', views.ResetPasswordView.as_view(), name='reset-password'),
     path('subscribe-to-newsletter/', views.SubscribeToNewsletterView.as_view(), name='sub-newsletter'),
     path('newsletter/', views.SendNewsletterView.as_view(), name='newsletter'),
+    path('about-us/', views.AboutUsView.as_view(), name='about-us'),
+    path('messages-from-users/', views.MessagesFromUsersView.as_view(), name='messages-from-users'),
 
 ]
 

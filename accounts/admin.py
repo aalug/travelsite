@@ -9,7 +9,7 @@ from . import models
 
 
 class UserAdmin(BaseUserAdmin):
-    """Define the admin pages for users."""
+    """Defines the admin pages for users."""
     ordering = ['id']
     list_display = ['email', 'username']
     fieldsets = (
@@ -44,7 +44,14 @@ class UserAdmin(BaseUserAdmin):
     )
 
 
+class MessageToStaffAdmin(admin.ModelAdmin):
+    """Defines the admin pages for MessageToStaff model,
+       so for messages from users to staff."""
+    list_display = ('email', 'subject')
+
+
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.UserProfile)
 admin.site.register(models.Subscriber)
 admin.site.register(models.NewsletterEmail)
+admin.site.register(models.MessageToStaff, MessageToStaffAdmin)

@@ -1,6 +1,6 @@
 {% load static %}
 <!-- ***** Header Area Start ***** -->
-<header class="header-area header-sticky">
+<header class="header-area header-sticky" style="{% if request.user.is_staff %}height: 200%;{% endif %}">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -9,26 +9,36 @@
                     <a href="{% url 'home' %}" class="logo-home"><img class="logo-home"
                                                                       src="{% static 'images/logo.png' %}" alt=""></a>
                     <!-- ***** Logo End ***** -->
+
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
                         <li><a href="{% url 'home' %}" class="{% if '/' == request.path %}active{% endif %}">Home</a>
                         </li>
-                        <li><a href="#">About Us</a></li>
+                        <li><a href="{% url 'about-us' %}"
+                               class="{% if '/about-us/' == request.path %}active{% endif %}">About Us</a></li>
                         <li><a href="#">Blog</a></li>
                         <li><a href="#">Shop</a></li>
                         <li><a href="#">Forum</a></li>
                         <li><a href="#">For developers</a></li>
-                        {% if request.user.is_staff %}
-                            <li><a href="{% url 'newsletter' %}"
-                                   class="{% if '/newsletter/' == request.path %}active{% endif %}">Newsletter</a></li>
-                        {% endif %}
                     </ul>
+
+                    {% if request.user.is_staff %}
+                        <ul class="nav">
+                            <li><a href="{% url 'newsletter' %}"
+                                   class="{% if '/newsletter/' == request.path %}active{% endif %}">Newsletter</a>
+                            </li>
+                            <li><a href="{% url 'messages-from-users' %}"
+                                   class="{% if '/messages-from-users/' == request.path %}active{% endif %}">Messages from users</a></li>
+                        </ul>
+                    {% endif %}
+
                     <div class="log-reg-div">
-                        {% if user.is_authenticated %}
+                        {% if request.user.is_authenticated %}
                             {% if request.user.is_staff %}
-                                <a class="log-reg" style="color: #aa0c0c; font-size: 14px;" href="{% url 'logout' %}">Logout </a>
+                                <a class="log-reg" style="color: #aa0c0c;"
+                                   href="{% url 'logout' %}">Logout </a>
                                 <span>|</span>
-                                <a class="log-reg" style="font-size: 14px;" href="{% url 'my-account' %}"> Admin
+                                <a class="log-reg" href="{% url 'my-account' %}"> Admin
                                     page</a>
                             {% else %}
                                 <a class="log-reg" style="color: #aa0c0c;" href="{% url 'logout' %}">Logout </a>

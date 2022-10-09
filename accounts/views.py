@@ -10,11 +10,13 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.http import urlsafe_base64_decode
 from django.views import View
-from django.views.generic import FormView, RedirectView, TemplateView, CreateView
+from django.views.generic import FormView, RedirectView, ListView
 
-from accounts.forms import UserForm, UserProfileForm, NewsletterEmailForm
-from accounts.models import User, Subscriber, UserProfile
+from accounts.forms import UserForm, UserProfileForm, NewsletterEmailForm, MessageToStaffForm
+from accounts.models import User, Subscriber, UserProfile, MessageToStaff
 from accounts.utils import detect_user_type, send_verification_email, send_confirmation_email, send_newsletter
+
+EMAIL_SENT_MESSAGE = 'Email sent successfully.'
 
 
 class RegisterUserView(SuccessMessageMixin, FormView):
@@ -43,7 +45,7 @@ class RegisterUserView(SuccessMessageMixin, FormView):
             return redirect('my-account')
 
     def sent_email(self, user):
-        """Sending verification email."""
+        """Method for sending verification email."""
         mail_subject = 'Please activate your account'
         email_template = 'accounts/emails/verification_email.html'
         send_verification_email(self.request, user, mail_subject, email_template)
@@ -58,7 +60,7 @@ class MyAccountRedirectView(LoginRequiredMixin, RedirectView):
 
 
 class LoginView(View):
-    """View for logging in."""
+    """View for users (can be user by staff also) to log in."""
 
     def get(self, request):
         if request.user.is_authenticated:
@@ -90,7 +92,6 @@ class LogoutView(View):
 
 class DashboardView(LoginRequiredMixin, View):
     """View for displaying user dashboard."""
-
     font_color = ''
 
     def get(self, request):
@@ -227,7 +228,7 @@ class SendNewsletterView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessage
     form_class = NewsletterEmailForm
     template_name = 'accounts/send_newsletter.html'
     success_url = reverse_lazy('newsletter')
-    success_message = 'Email sent successfully.'
+    success_message = EMAIL_SENT_MESSAGE
 
     def form_valid(self, form):
         title = form.cleaned_data['title']
@@ -236,3 +237,51 @@ class SendNewsletterView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessage
         send_newsletter(title, content, email_template)
         form.save()
         return super().form_valid(form)
+
+
+class AboutUsView(SuccessMessageMixin, FormView):
+    """view for "About us" page with option
+       to contact the owners of the site
+       and start chatting with them."""
+    form_class = MessageToStaffForm
+    template_name = 'accounts/about_us.html'
+    success_url = reverse_lazy('about-us')
+    success_message = EMAIL_SENT_MESSAGE
+
+    def get_context_data(self, **kwargs):
+        """Getting the context and updating it with slug of ChatRoom.
+           It is sent as a string, not an ChatRoom object, because
+           the creation of a ChatRoom is not certain, so there would
+           be no point in creating an instance of ChatRoom here.
+           It will be created when the already logged-in user
+           clicks on the "chats-with-support" link."""
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context['room_name'] = f'{self.request.user.username}__support'
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.request.user.is_authenticated:
+            initial['email'] = self.request.user.email
+            initial['username'] = self.request.user.username
+        return initial
+
+
+class MessagesFromUsersView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    """View for page where are displayed all messages
+       sent in "about us" page."""
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        raise PermissionDenied
+
+    template_name = 'accounts/messages_from_users.html'
+    model = MessageToStaff
+    paginate_by = 20
+    context_object_name = 'messages'

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Chatting with support
+{% endblock %}
+{% block additional_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/chat-room.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+{% endblock %}
+
+{% block content %}
+    <h3 class="chat-title">Chat with support</h3>
+    <div class="main-msg-container">
+        <div id="chat-messages">
+            {% for msg in previous_messages %}
+                {% if request.user == msg.user %}
+                    <div class="bubbleWrapper">
+                        <div class="inlineContainer own">
+                            <div class="ownBubble own">
+                                {{ msg.content }}
+                            </div>
+                        </div>
+                        <span class="own">{{ msg.date_added }}</span>
+                    </div>
+                {% else %}
+                    <div class="bubbleWrapper">
+                        <p class="msg-author">{{ msg.user.username }}</p>
+                        <div class="inlineContainer">
+                            <div class="otherBubble other">
+                                {{ msg.content }}
+                            </div>
+                        </div>
+                        <span class="own left-date">{{ msg.date_added }}</span>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="float-right msg-input">
+            <form class="flex">
+                <textarea name="content" cols="70" rows="3" class="flex-1 mr-3 form-control"
+                          placeholder="Your message..." id="chat-message-input"></textarea>
+                <button type="button" id="chat-message-submit" class="float-right">
+                    Send
+                </button>
+
+            </form>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block additional_js %}
+    {{ room_name|json_script:"room-name" }}
+    {{ request.user.username|json_script:"username" }}
+
+    <script>
+        const username = JSON.parse(document.getElementById('username').textContent);
+        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+
+        document.querySelector('#chat-message-submit').onclick = function (e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            if (message === '') {
+                alert('Message can not be left blank');
+            } else {
+                chatSocket.send(JSON.stringify({
+                    'message': message,
+                    'username': username,
+                    'room_name': roomName
+                }));
+                messageInputDom.value = '';
+            }
+        };
+
+        const chatSocket = new WebSocket(
+            'ws://' +
+            window.location.host +
+            '/ws/chat/' +
+            roomName +
+            '/'
+        );
+
+        chatSocket.onmessage = function (e) {
+            const date = new Date();
+            const minutes = date.getMinutes();
+            const hour = date.getHours();
+            const yyyy = date.getFullYear();
+            let mm = date.getMonth() + 1; // Months start at 0!
+            let dd = date.getDate();
+
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+
+            const formattedToday = hour + ':' + minutes + ' ' + dd + '/' + mm + '/' + yyyy;
+
+            const data = JSON.parse(e.data);
+            const msg = '<div class="bubbleWrapper">' +
+                '<div class="inlineContainer own">' +
+                '<div class="ownBubble own">' +
+                data.message +
+                '</div></div><span class="own">' + formattedToday + '</span></div>'
+
+            document.querySelector('#chat-messages').innerHTML += (msg);
+        };
+
+    </script>
+
+{% endblock %}

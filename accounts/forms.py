@@ -2,7 +2,7 @@
 Forms for accounts app.
 """
 from django import forms
-from .models import User, UserProfile, Subscriber, NewsletterEmail
+from .models import User, UserProfile, NewsletterEmail, MessageToStaff
 from .validators import allow_only_images_validator
 
 
@@ -25,6 +25,7 @@ class UserForm(forms.ModelForm):
 
 
 class UserProfileForm(forms.ModelForm):
+    """Form for getting the information from user to build user profile."""
     profile_picture = forms.FileField(widget=forms.FileInput(attrs={'class': 'btn btn-info'}),
                                       validators=[allow_only_images_validator])
     cover_photo = forms.FileField(widget=forms.FileInput(attrs={'class': 'btn btn-info'}),
@@ -41,6 +42,16 @@ class UserProfileForm(forms.ModelForm):
 
 
 class NewsletterEmailForm(forms.ModelForm):
+    """Form for getting the data which later will be sent as newsletter."""
+
     class Meta:
         model = NewsletterEmail
+        fields = '__all__'
+
+
+class MessageToStaffForm(forms.ModelForm):
+    """Form for sending emails to admin team / owner."""
+
+    class Meta:
+        model = MessageToStaff
         fields = '__all__'
