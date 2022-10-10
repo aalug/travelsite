@@ -8,7 +8,7 @@ class ChatRoom(models.Model):
     """Model for a ChatRoom where users are connected to send Messages."""
     name = models.CharField(max_length=101, null=True, blank=True)
     users = models.ManyToManyField(User)
-    data_created = models.DateTimeField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -22,10 +22,10 @@ class Message(models.Model):
     date_added = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
-        if len(self.content) > 10:
-            return f'{self.user}: {self.content[10]}...'
+        if len(self.content) > 20:
+            return f'{self.content[:20]}...'
         else:
-            return f'{self.user}: {self.content}'
+            return f'{self.content}'
 
     class Meta:
         ordering = ('date_added',)

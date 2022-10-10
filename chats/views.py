@@ -1,11 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
-from django.db.models import Prefetch
-from django.shortcuts import render
+from django.db.models import Q
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import View
-from django.views.generic import RedirectView, TemplateView
+from django.views.generic import RedirectView, TemplateView, ListView
 
 from chats.models import ChatRoom, Message
 
@@ -57,9 +57,54 @@ class ChatRoomView(LoginRequiredMixin, UserPassesTestMixin, View):
         return messages
 
     def get(self, request, room_name):
+        names = room_name.split('__')
+        if names[0] != request.user.username:
+            other_user_name = names[0]
+        else:
+            other_user_name = names[1]
         context = {
             'room_name': room_name,
-            'previous_messages': self.get_previous_messages()
+            'previous_messages': self.get_previous_messages(),
+            'other_user_name': other_user_name
         }
         return render(request, self.template_name, context)
 
+
+class UserMessagesView(LoginRequiredMixin, ListView):
+    """View for sending all the conversations, so in this case
+       ChatRooms with all needed data - usernames, last messages
+       and room_names that are needed to get to the chat room."""
+    template_name = 'chats/user_messages.html'
+    context_object_name = 'chat_rooms'
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            chat_rooms = ChatRoom.objects.filter(
+                Q(name__startswith=f'{self.request.user.username}__') |
+                Q(name__endswith=f'__{self.request.user.username}') |
+                Q(name__endswith='__support'))
+        else:
+            chat_rooms = ChatRoom.objects.filter(
+                Q(name__startswith=f'{self.request.user.username}__') |
+                Q(name__endswith=f'__{self.request.user.username}'))
+        return chat_rooms
+
+    def get_context_data(self, **kwargs):
+        context = super(UserMessagesView, self).get_context_data(**kwargs)
+        chat_rooms = self.get_queryset()
+        names_and_last_messages = {}
+
+        for room in chat_rooms:
+            messages = Message.objects.filter(chat_room=room).order_by('-date_added')
+            if messages:
+                last_message = messages[0]
+            else:
+                last_message = 'No messages'
+            names = room.name.split('__')
+            if names[0] != self.request.user.username:
+                names_and_last_messages.update({room.name: {names[0]: last_message}})
+            else:
+                names_and_last_messages.update({room.name: {names[1]: last_message}})
+
+        context['names_and_last_messages'] = names_and_last_messages
+        return context

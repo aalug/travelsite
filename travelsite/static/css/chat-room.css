@@ -107,3 +107,7 @@ span.other {
     margin-top: 100px;
     margin-bottom: 15px;
 }
+
+.wrap-text {
+    overflow-wrap: break-word;
+}
