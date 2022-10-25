@@ -5,6 +5,7 @@
       <node color="8" path="$PROJECT_DIR$/accounts" />
       <node color="4" path="$PROJECT_DIR$/chat" />
       <node color="4" path="$PROJECT_DIR$/chats" />
+      <node color="5" path="$PROJECT_DIR$/ecommerce" />
       <node color="8" path="$PROJECT_DIR$/templates/accounts" />
       <node color="4" path="$PROJECT_DIR$/templates/chat" />
       <node color="4" path="$PROJECT_DIR$/templates/chats" />
