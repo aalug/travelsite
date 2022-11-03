@@ -2,10 +2,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
-from django.views.generic import RedirectView, TemplateView, ListView
+from django.views.generic import RedirectView, ListView
 
 from chats.models import ChatRoom, Message
 

@@ -9,6 +9,7 @@
       <node color="8" path="$PROJECT_DIR$/templates/accounts" />
       <node color="4" path="$PROJECT_DIR$/templates/chat" />
       <node color="4" path="$PROJECT_DIR$/templates/chats" />
+      <node color="5" path="$PROJECT_DIR$/templates/ecommerce" />
     </files>
     <colors>
       <color id="1" value="#4f060d51" name="Color 1" enabled="true" />

@@ -17,6 +17,8 @@ class Category(MPTTModel):
                             verbose_name=_('category safe URL'),
                             help_text=_('format: required, letters, numbers, underscores or hyphens'))
 
+    cover_photo = models.ImageField(upload_to='categories/cover_photos', blank=True, null=True)
+
     is_active = models.BooleanField(default=True)
 
     parent = TreeForeignKey('self', on_delete=models.PROTECT,
@@ -72,22 +74,14 @@ class Product(models.Model):
         return self.name
 
 
-class ProductType(models.Model):
-    """Product type table."""
-    name = models.CharField(
-        max_length=255, unique=True,
-        verbose_name=_('type of product'),
-        help_text=_('format: required, unique, max-255'))
-
-    def __str__(self):
-        return self.name
-
-
 class Brand(models.Model):
     """Product brand table."""
     name = models.CharField(max_length=255, unique=True,
                             verbose_name=_('brand name'),
                             help_text=_('format: required, unique, max-255'))
+
+    def __str__(self):
+        return self.name
 
 
 class ProductAttribute(models.Model):
@@ -99,6 +93,20 @@ class ProductAttribute(models.Model):
     description = models.TextField(unique=False,
                                    verbose_name=_('product attribute description'),
                                    help_text=_('format: required'))
+
+    def __str__(self):
+        return self.name
+
+
+class ProductType(models.Model):
+    """Product type table."""
+    name = models.CharField(max_length=255, unique=True,
+                            verbose_name=_('type of product'),
+                            help_text=_('format: required, unique, max-255'))
+
+    product_type_attributes = models.ManyToManyField(ProductAttribute,
+                                                     related_name='product_type_attributes',
+                                                     through='ProductTypeAttribute')
 
     def __str__(self):
         return self.name
@@ -158,6 +166,10 @@ class ProductInventory(models.Model):
                                      error_messages={
                                          'name': {'max_length': _(f'{PRICE_RANGE_ERROR_MSG}.')}})
 
+    is_on_sale = models.BooleanField(default=False,
+                                     verbose_name=_('is the product on sale'),
+                                     help_text=_('format: true=product is on sale'))
+
     weight = models.FloatField(unique=False, verbose_name=_('product weight'))
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False,
@@ -170,6 +182,10 @@ class ProductInventory(models.Model):
 
     def __str__(self):
         return self.product.name
+
+    class Meta:
+        verbose_name = _('product inventory')
+        verbose_name_plural = _('product inventories')
 
 
 class Media(models.Model):
@@ -223,6 +239,9 @@ class Stock(models.Model):
                                      verbose_name=_('units sold to date'),
                                      help_text=_('format: required, default-0'))
 
+    def __str__(self):
+        return f'{self.product_inventory} | Stock'
+
 
 class ProductAttributeValues(models.Model):
     """Product attribute values link table."""
@@ -236,3 +255,17 @@ class ProductAttributeValues(models.Model):
 
     class Meta:
         unique_together = (('attributevalues', 'productinventory'),)
+
+
+class ProductTypeAttribute(models.Model):
+    """Product type attributes link table."""
+    product_attribute = models.ForeignKey(ProductAttribute,
+                                          related_name='productattribute',
+                                          on_delete=models.PROTECT)
+
+    product_type = models.ForeignKey(ProductType,
+                                     related_name='producttype',
+                                     on_delete=models.PROTECT)
+
+    class Meta:
+        unique_together = (('product_attribute', 'product_type'),)

@@ -86,6 +86,7 @@
 .msg-table {
     margin: 80px 0;
 }
+
 .msg-table h3 {
     text-align: center;
 }
@@ -117,4 +118,51 @@
 .msg-author {
     color: #5756e6;
     font-weight: bold;
+}
+
+.category-name {
+    color: black;
+}
+
+.category-name:hover {
+    color: rgba(12, 84, 96, 0.55);
+}
+
+.product-description p {
+    width: 200px;
+    height: 80px;
+    line-height: 20px;
+    word-break: break-all;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    -ms-box-orient: vertical;
+    box-orient: vertical;
+    -webkit-line-clamp: 5;
+    -moz-line-clamp: 5;
+    -ms-line-clamp: 5;
+    line-clamp: 5;
+    overflow: hidden;
+}
+
+.product-link {
+    margin-bottom: 15px;
+    background-color: white;
+    border: solid 1px rgba(92, 90, 90, 0.15);
+    border-radius: 2px;
+    width: 700px;
+    height: 320px;
+    transition: background-color 450ms ease-out 10ms;
+    -webkit-transition: transform 200ms ease-in-out;
+
+}
+
+.product-link a {
+    color: black;
+}
+
+.product-link:hover {
+    background-color: rgb(237, 237, 237);
+    transform: scale(1, 1.07);
+    border: solid 2px #8c8c8c;
 }

@@ -24,5 +24,6 @@ urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
     path('', include('accounts.urls')),
     path('chat/', include('chats.urls')),
+    path('shop/', include('ecommerce.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

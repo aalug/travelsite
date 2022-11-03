@@ -17,9 +17,9 @@
                         <li><a href="{% url 'about-us' %}"
                                class="{% if '/about-us/' == request.path %}active{% endif %}">About Us</a></li>
                         <li><a href="#">Blog</a></li>
-                        <li><a href="#">Shop</a></li>
+                        <li><a href="{% url 'shop' %}" class="{% if '/shop/' in request.path %}active{% endif %}">Shop</a></li>
                         <li><a href="#">Forum</a></li>
-                        <li><a href="{% url 'user-messages' %}" class="{% if '/chat/my-messages/' == request.path %}active{% endif %}"><i class="fa fa-envelope" aria-hidden="true"></i> Your messages</a></li>
+                        <li><a href="{% url 'user-messages' %}" class="{% if '/chat/my-messages/' in request.path %}active{% endif %}"><i class="fa fa-envelope" aria-hidden="true"></i> Your messages</a></li>
                     </ul>
 
 
