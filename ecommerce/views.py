@@ -1,37 +1,13 @@
-
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, TemplateView
 
-from .models import Category, Product, ProductInventory, Stock, Media
-
-
-def get_categories_with_parents_and_children():
-    """Helper function for getting categories, but with
-       distinction which categories are parents and which
-       ones are children."""
-    categories = Category.objects.filter(is_active=True)
-    categories_dict = {}
-
-    for category in categories:
-        if not category.parent:
-            categories_dict.update({
-                category: []
-            })
-        else:
-            categories_dict[category.parent].append(category)
-
-    return categories_dict
-
-
-class CategoriesListView(ListView):
-    """"""
-    template_name = 'ecommerce/categories.html'
-    model = Category
-    context_object_name = 'categories'
+from .models import Category, Product, ProductInventory, Stock, Media, ProductAttributeValues
+from .utils import get_products_attribute_values, get_categories_with_parents_and_children
 
 
 class MainShopPageView(TemplateView):
-    """View for main page of the shop app."""
+    """View for main page of the ecommerce app."""
     template_name = 'ecommerce/main_shop_page.html'
 
     @staticmethod
@@ -54,8 +30,10 @@ class MainShopPageView(TemplateView):
                 product_inventory = get_object_or_404(ProductInventory, product=product)
                 media = Media.objects.filter(product_inventory=product_inventory).order_by('created_at')[:1]
                 units = get_object_or_404(Stock, product_inventory=product_inventory)
+                attribute_values = get_products_attribute_values(product_inventory)
+
                 # This works because on this website won't be many products, so it can still be efficient
-                all_products.append((category, product_inventory, media, units))
+                all_products.append((category, product_inventory, media, units, attribute_values))
 
         category1_items = []
         category2_items = []
@@ -109,6 +87,7 @@ class ProductsByCategoryView(ListView):
     """View for fetching products by category (send in as "slug")."""
     template_name = 'ecommerce/products_by_category.html'
     context_object_name = 'products_data'
+    filter_presence = True
 
     def get_products_on_sale(self):
         """Gets and returns all active products of this category that are currently on sale."""
@@ -124,17 +103,61 @@ class ProductsByCategoryView(ListView):
 
         return products_data
 
-    def get_queryset(self):
+    def get_filters(self):
+        """Method gets and returns filters appropriate to current category."""
         slug = self.kwargs.get('slug')
-        products = Product.objects.filter(category__slug=slug)
+        attrs = ProductInventory.objects.filter(product__category__slug=slug).values(
+            'attribute_values__product_attribute__name', 'attribute_values__attribute_value').distinct()
+
+        if attrs[0]['attribute_values__product_attribute__name'] is None:
+            self.filter_presence = False
+        else:
+            filters = {}
+            attr_name = 'attribute_values__product_attribute__name'
+            attr_value = 'attribute_values__attribute_value'
+
+            for attr in attrs:
+                if attr[attr_name] in filters:
+                    value = filters.get(attr[attr_name])
+                    value.append(attr[attr_value])
+                    filters[attr[attr_name]] = value
+                else:
+                    filters[attr[attr_name]] = [attr[attr_value]]
+
+            return filters
+
+    def get_queryset_with_filters(self):
+        """Method gets and returns products of given category.
+           If the filters are checked - it will return filtered data,
+           if not - it will return all products that are associated
+           with this category."""
+        slug = self.kwargs.get('slug')
+        filter_arguments = []
+
+        if self.request.GET:  # there are filters to apply
+            for value in self.request.GET.values():
+                filter_arguments.append(value)
+
+            from django.db.models import Count
+
+            products = ProductInventory.objects.filter(product__category__slug=slug).filter(
+                attribute_values__attribute_value__in=filter_arguments).annotate(
+                num_tags=Count('attribute_values')).filter(num_tags=len(filter_arguments))
+
+        else:  # no filters checked
+            products = ProductInventory.objects.filter(product__category__slug=slug)
+
         products_data = []
-        for product in products:
-            product_inventory = get_object_or_404(ProductInventory, product=product)
+        for product_inventory in products:
             units = get_object_or_404(Stock, product_inventory=product_inventory).units
             image = Media.objects.filter(product_inventory=product_inventory).order_by('created_at')[:1]
-            data = (product_inventory, units, image)
+            attribute_values = get_products_attribute_values(product_inventory)
+            data = (product_inventory, units, image, attribute_values)
             products_data.append(data)
         return products_data
+
+    def get_queryset(self):
+        return self.get_queryset_with_filters()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -142,6 +165,9 @@ class ProductsByCategoryView(ListView):
         context['all_categories'] = get_categories_with_parents_and_children()
         context['on_sale'] = self.get_products_on_sale()
         context['category'] = category
+        context['filter_presence'] = self.filter_presence
+        context['filters'] = self.get_filters()
+
         return context
 
 
@@ -156,5 +182,3 @@ class ProductDetailView(TemplateView):
         product_inventory = get_object_or_404(ProductInventory, product=product)
         context['product'] = product_inventory
         return context
-
-

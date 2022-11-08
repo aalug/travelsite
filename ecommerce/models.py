@@ -253,6 +253,9 @@ class ProductAttributeValues(models.Model):
                                          related_name='productattributevaluess',
                                          on_delete=models.PROTECT)
 
+    def __str__(self):
+        return str(self.attributevalues)
+
     class Meta:
         unique_together = (('attributevalues', 'productinventory'),)
 
@@ -267,5 +270,12 @@ class ProductTypeAttribute(models.Model):
                                      related_name='producttype',
                                      on_delete=models.PROTECT)
 
+    category = models.ForeignKey(Category, null=True,
+                                 related_name='category',
+                                 on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f'{self.product_attribute}'
+
     class Meta:
-        unique_together = (('product_attribute', 'product_type'),)
+        unique_together = (('product_attribute', 'product_type', 'category'),)

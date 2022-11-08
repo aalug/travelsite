@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import Category, Product, ProductInventory, ProductType, ProductAttribute, \
-    ProductAttributeValue, Stock, Brand, Media, ProductAttributeValues
+    ProductAttributeValue, Stock, Brand, Media, ProductAttributeValues, ProductTypeAttribute
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -19,6 +19,10 @@ class ProductInventoryAdmin(admin.ModelAdmin):
     list_filter = ('is_active', 'product_type', 'is_on_sale')
 
 
+class ProductAttributeValuesAdmin(admin.ModelAdmin):
+    list_filter = ('attributevalues', )
+
+
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductInventory, ProductInventoryAdmin)
@@ -28,4 +32,5 @@ admin.site.register(Stock)
 admin.site.register(Brand)
 admin.site.register(ProductAttribute)
 admin.site.register(ProductAttributeValue)
-admin.site.register(ProductAttributeValues)
+admin.site.register(ProductAttributeValues, ProductAttributeValuesAdmin)
+admin.site.register(ProductTypeAttribute)
