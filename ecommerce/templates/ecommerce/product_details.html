@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="page-heading-about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3>{{ product }}</h3>
+                    <h4 id="price">{{ products_data.0.0.store_price }}</h4>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="about-item">
+        {% for image in images %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="img-row">
+                            <div class="img-column">
+                                <img class="product-image" src="{{ image.image.url }}" alt="{{ image.alt_text }}"
+                                     onclick="photoGallery(this);" id="id_image_{{ forloop.counter }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9">
+                    <!-- The expanding image container -->
+                    <div class="img-container">
+                        <!-- Close the image -->
+                        <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+                        <!-- Expanded image -->
+                        <img id="expandedImg" style="width:100%">
+
+                        <!-- Image text -->
+                        <div id="imgtext"></div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    {% if is_to_choose %}
+                        <form action="" method="GET">
+                            <ul class="choose-attr-value">
+                                <li class="font-weight-bold">CHOOSE</li>
+                                {% for product_inventory, attr_value, units in products_data %}
+                                    {% for key, value in attr_value.items %}
+                                        {% if key == 'size' or key == 'language' %}
+                                            <li>
+                                                <input type="radio" id="id_{{ value }}" name="{{ key }}"
+                                                       onchange="setPrice(this,
+                                                               {% if product_inventory.is_on_sale %}true{% else %}false{% endif %});" value="{{ value }}"
+                                                       {% if units == 0 %}disabled{% endif %}
+                                                       data-price="
+                                                               {% if product_inventory.is_on_sale %}{{ product_inventory.sale_price }}{% else %}{{ product_inventory.store_price }}{% endif %}"/>
+                                                <label for="id_{{ value }}"
+                                                       {% if units == 0 %}disabled{% endif %}>{{ value|upper }}
+                                                    {% if product_inventory.is_on_sale %}
+                                                        <span class="on-sale-flag">SALE</span>
+                                                    {% endif %}</label>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="about-upcoming-shows">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>About The Product</h2>
+                    <p>
+                        {{ product.description }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="also-like">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>You Might Also Like...</h2>
+                </div>
+                {#============== 3 RANDOM PRODUCTS ==============#}
+                <div class="col-lg-4">
+                    <div class="like-item">
+                        <div class="thumb">
+                            <a href="event-details.html"><img src="assets/images/like-01.jpg" alt=""></a>
+                            <div class="icons">
+                                <ul>
+                                    <li><a href="event-details.html"><i class="fa fa-arrow-right"></i></a></li>
+                                    <li><a href="ticket-details.html"><i class="fa fa-ticket"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="down-content">
+                            <span>Sept 10 to 14, 2021</span>
+                            <a href="event-details.html"><h4>Wonder Land Music and Arts Festival</h4></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="like-item">
+                        <div class="thumb">
+                            <a href="event-details.html"><img src="assets/images/like-02.jpg" alt=""></a>
+                            <div class="icons">
+                                <ul>
+                                    <li><a href="event-details.html"><i class="fa fa-arrow-right"></i></a></li>
+                                    <li><a href="ticket-details.html"><i class="fa fa-ticket"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="down-content">
+                            <span>Oct 11 to 16, 2021</span>
+                            <a href="event-details.html"><h4>Big Water Splashing Festival</h4></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="like-item">
+                        <div class="thumb">
+                            <a href="event-details.html"><img src="assets/images/like-03.jpg" alt=""></a>
+                            <div class="icons">
+                                <ul>
+                                    <li><a href="event-details.html"><i class="fa fa-arrow-right"></i></a></li>
+                                    <li><a href="ticket-details.html"><i class="fa fa-ticket"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="down-content">
+                            <span>Nov 10 to 18, 2021</span>
+                            <a href="event-details.html"><h4>Tiger Dance Hip Hop Festival</h4></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block additional_js %}
+    {{ images.0.image.url|json_script:"first-img" }}
+
+    <script>
+        function photoGallery(imgs) {
+            // Get the expanded image
+            var expandImg = document.getElementById("expandedImg");
+            // Get the image text
+            var imgText = document.getElementById("imgtext");
+            // Use the same src in the expanded image as the image being clicked on from the grid
+            expandImg.src = imgs.src;
+            // Use the value of the alt attribute of the clickable image as text inside the expanded image
+            imgText.innerHTML = imgs.alt;
+            // Show the container element (hidden with CSS)
+            expandImg.parentElement.style.display = "block";
+        }
+
+        function setPrice(input, isOnSale) {
+            if (input.checked === true) {
+                let price = input.dataset.price;
+                let priceDisplay = document.getElementById('price');
+                priceDisplay.textContent = price + '€';
+                if (isOnSale === true) {
+                    priceDisplay.style.color = 'green';
+                } else {
+                    priceDisplay.style.color = '';
+                }
+            }
+        }
+
+        // loads first image of all images as expanded
+        window.onload = function() {
+            let firstImg = document.getElementById('id_image_1');
+            photoGallery(firstImg);
+        }
+
+    </script>
+{% endblock %}

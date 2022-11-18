@@ -196,9 +196,8 @@ class Media(models.Model):
 
     image = models.ImageField(unique=False,
                               verbose_name=_('product image'),
-                              upload_to='images/',
-                              default='images/default.png',
-                              help_text=_('format: required, default-default.png'))
+                              upload_to='products/',
+                              help_text=_('format: required'))
 
     alt_text = models.CharField(max_length=255, unique=False,
                                 verbose_name=_('alternative text'),

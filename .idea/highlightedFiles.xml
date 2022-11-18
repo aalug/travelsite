@@ -3,9 +3,14 @@
   <component name="ProjectTreeColorHighlighter">
     <files>
       <node color="8" path="$PROJECT_DIR$/accounts" />
+      <node color="7" path="$PROJECT_DIR$/accounts/templates" />
       <node color="4" path="$PROJECT_DIR$/chat" />
       <node color="4" path="$PROJECT_DIR$/chats" />
+      <node color="7" path="$PROJECT_DIR$/chats/templates" />
       <node color="5" path="$PROJECT_DIR$/ecommerce" />
+      <node color="7" path="$PROJECT_DIR$/ecommerce/templates" />
+      <node color="6" path="$PROJECT_DIR$/ecommerce_drf" />
+      <node color="1" path="$PROJECT_DIR$/search" />
       <node color="8" path="$PROJECT_DIR$/templates/accounts" />
       <node color="4" path="$PROJECT_DIR$/templates/chat" />
       <node color="4" path="$PROJECT_DIR$/templates/chats" />
@@ -17,8 +22,8 @@
       <color id="3" value="#3f371b" name="Color 3" enabled="true" />
       <color id="4" value="#162c16" name="Color 4" enabled="true" />
       <color id="5" value="#0f2f47" name="Color 5" enabled="true" />
-      <color id="6" value="#171a34" name="Color 6" enabled="true" />
-      <color id="7" value="#311333" name="Color 7" enabled="true" />
+      <color id="6" value="#1e2434e8" name="Color 6" enabled="true" />
+      <color id="7" value="#44360de0" name="Color 7" enabled="true" />
       <color id="8" value="#000000" name="Color 8" enabled="true" />
     </colors>
     <option name="marksForCollapsedHighlights" value="Dots" />

@@ -104,20 +104,21 @@
 
             const data = JSON.parse(e.data);
             let msg = ''
-            if (otherUsername === data.username) {
+            if (otherUsername !== data.username) {
+                msg = '<div class="bubbleWrapper">' +
+                    '<div class="inlineContainer own">' +
+                    '<div class="ownBubble own wrap-text">' +
+                    data.message +
+                    '</div></div><span class="own">' + formattedNow + '</span></div>'
+            } else {
                 msg = '<div class="bubbleWrapper">' +
                     '<p class="msg-author">' + data.username + '</p>' +
                     '<div class="inlineContainer">' +
                     '<div class="otherBubble other wrap-text">' +
                     data.message +
                     '</div></div><span class="other">' + formattedNow + '</span></div>'
-            } else {
-                msg = '<div class="bubbleWrapper">' +
-                    '<div class="inlineContainer own">' +
-                    '<div class="ownBubble own wrap-text">' +
-                    data.message +
-                    '</div></div><span class="own">' + formattedNow + '</span></div>'
             }
+
 
             document.querySelector('#chat-messages').innerHTML += (msg);
         };

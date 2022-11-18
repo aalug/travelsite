@@ -28,6 +28,16 @@ services:
     depends_on:
       - db
 
+  esearch:
+    container_name: elastic_search
+    image: elasticsearch:7.17.7
+    environment:
+      - discovery.type=single-node
+    logging:
+      driver: none
+    ports:
+      - "9200:9200"
+
 #  pgadmin:
 #    container_name: pgadmin4_container
 #    image: dpage/pgadmin4

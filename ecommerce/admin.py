@@ -23,12 +23,16 @@ class ProductAttributeValuesAdmin(admin.ModelAdmin):
     list_filter = ('attributevalues', )
 
 
+class StockAdmin(admin.ModelAdmin):
+    list_filter = ('product_inventory__product_type', )
+
+
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductInventory, ProductInventoryAdmin)
 admin.site.register(ProductType)
 admin.site.register(Media)
-admin.site.register(Stock)
+admin.site.register(Stock, StockAdmin)
 admin.site.register(Brand)
 admin.site.register(ProductAttribute)
 admin.site.register(ProductAttributeValue)

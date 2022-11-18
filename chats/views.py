@@ -108,8 +108,3 @@ class UserMessagesView(LoginRequiredMixin, ListView):
 
         context['names_and_last_messages'] = names_and_last_messages
         return context
-
-
-    # in shop and forum there will be a different navbr
-
-    # 21:56
