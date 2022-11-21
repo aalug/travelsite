@@ -1,9 +1,0 @@
-[{
-        "model": "ecommerce.productattributevalue",
-        "id": "1",
-        "fields": {
-            "product_attribute": "1",
-            "attribute_value": "10"
-        }
-    }
-]

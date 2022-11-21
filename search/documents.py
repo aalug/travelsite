@@ -13,6 +13,7 @@ class ProductInventoryDocument(Document):
         properties={'name': fields.TextField(), 'web_id': fields.TextField()}
     )
     brand = fields.ObjectField(properties={'name': fields.TextField()})
+    product_type = fields.ObjectField(properties={'name': fields.TextField()})
 
     class Index:
         name = 'productinventory'

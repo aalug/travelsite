@@ -1,0 +1,60 @@
+<div id="filters-div" class="float-right" data-upDown="up">
+    <input type="hidden" id="id-query" name="query">
+    {% for key, value in filters.items %}
+        <h5 id="id-key-{{ key }}">{{ key|upper }}</h5>
+        <ul>
+            {% for v in value %}
+                <li>
+                    <input type="{% if key == 'color' %}radio{% else %}checkbox{% endif %}"
+                           value="{{ v }}"
+                           onchange="handleChangeAndCookie(this);"
+                           id="id-value-{{ v }}" name="{{ key }}"
+                           class="filter-checkbox">
+                    <label class="checkbox-filter-label"
+                           for="id-value-{{ v }}">{% if key == 'size' or key == 'language' %}{{ v|upper }}{% else %}
+                        {{ v|title }}{% endif %}</label>
+                </li>
+            {% endfor %}
+        </ul>
+        <hr>
+    {% endfor %}
+    <button onclick="resetFilters()" type="button"
+            class="float-right reset-filters-button">
+        Reset Filters
+    </button>
+    <button onclick="sendQuery();" type="submit" class="float-right apply-filters-button">
+        Apply Filters
+    </button>
+</div>
+<button id="show-hide-filters-btn" type="button" onclick="showHideFilters();">
+    Hide Filters
+</button>
+
+<script>
+    function showHideFilters() {
+        var x = document.getElementById('filters-div');
+        let btn = document.getElementById('show-hide-filters-btn');
+        if (x.style.display === 'none') {
+            x.style.display = 'block';
+        } else {
+            x.style.display = 'none';
+        }
+        changeBtnText(btn);
+    }
+
+    function changeBtnText(button) {
+        if (button.innerText === 'Show Filters') {
+            button.innerText = 'Hide Filters'
+        } else {
+            button.innerText = 'Show Filters'
+        }
+    }
+
+    function sendQuery() {
+        let requestGet = window.location.search;
+        let query = requestGet.replace('?query=', '');
+
+        let queryInputId = document.getElementById('id-query');
+        queryInputId.value = query;
+    }
+</script>

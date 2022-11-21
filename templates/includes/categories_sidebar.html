@@ -1,0 +1,68 @@
+<div class="col-lg-3">
+
+    <div class="sidebar">
+
+        <div class="row">
+            <div class="search-box">
+                <form method="GET" action="{% url 'search' %}">
+                    <input type="text" name="query" id="search-input" list="searchdata"
+                           placeholder="Search for products...">
+                    <button onclick="saveSearch();" class="search" type="submit">Search</button>
+                    <datalist id="searchdata"></datalist>
+                </form>
+            </div>
+            <div class="col-lg-12">
+                <div id="s-bar" class="month">
+                    <ul>
+                        {% for cat_parent, cat_children in all_categories.items %}
+                            <li>
+                                <a href="{% url 'products-by-category' cat_parent.slug %}"
+                                   style="font-weight: bold !important; font-size: 20px !important;">
+                                    {{ cat_parent }}</a>
+                            </li>
+                            {% for child in cat_children %}
+                                <li>
+                                    <a href="{% url 'products-by-category' child.slug %}"
+                                       style="font-size: 16px !important; text-indent: 20px !important; ">
+                                        > {{ child }}</a>
+                                </li>
+                            {% endfor %}
+                            <br>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    window.addEventListener("load", (event) => {
+        loadLastSearch();
+    });
+
+    var searchHistory = (localStorage.searchHistory) ? JSON.parse(localStorage.searchHistory) : [];
+    document.querySelector(".search").addEventListener("click", () => {
+        searchHistory.push(document.querySelector("#search-input").value);
+        localStorage.searchHistory = JSON.stringify(searchHistory);
+    });
+    document.querySelector("#search-input").addEventListener("focus", () => {
+        var data = document.querySelector('datalist#searchdata');
+        data.innerHTML = "";
+        searchHistory.forEach((search) => {
+            data.innerHTML = "<option>" + data.innerHTML;
+            data.querySelector("option").innerText = search;
+        });
+    });
+
+    function saveSearch() {
+        let userInput = document.getElementById('search-input').value;
+        localStorage.setItem('lastSearch', userInput);
+    }
+
+    function loadLastSearch() {
+        let lastSearch = localStorage.getItem('lastSearch',);
+        let searchInput = document.getElementById('search-input');
+        searchInput.value = lastSearch;
+    }
+
+</script>

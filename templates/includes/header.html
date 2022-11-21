@@ -17,11 +17,13 @@
                         <li><a href="{% url 'about-us' %}"
                                class="{% if '/about-us/' == request.path %}active{% endif %}">About Us</a></li>
                         <li><a href="#">Blog</a></li>
-                        <li><a href="{% url 'shop' %}" class="{% if '/shop/' in request.path %}active{% endif %}">Shop</a></li>
+                        <li><a href="{% url 'shop' %}"
+                               class="{% if '/shop/' in request.path %}active{% endif %}">Shop</a></li>
                         <li><a href="#">Forum</a></li>
-                        <li><a href="{% url 'user-messages' %}" class="{% if '/chat/my-messages/' in request.path %}active{% endif %}"><i class="fa fa-envelope" aria-hidden="true"></i> Your messages</a></li>
+                        <li><a href="{% url 'user-messages' %}"
+                               class="{% if '/chat/my-messages/' in request.path %}active{% endif %}"><i
+                                class="fa fa-envelope" aria-hidden="true"></i> Your messages</a></li>
                     </ul>
-
 
                     {% if request.user.is_staff %}
                         <ul class="nav">
@@ -29,7 +31,8 @@
                                    class="{% if '/newsletter/' == request.path %}active{% endif %}">Newsletter</a>
                             </li>
                             <li><a href="{% url 'messages-from-users' %}"
-                                   class="{% if '/messages-from-users/' == request.path %}active{% endif %}">Messages from users</a></li>
+                                   class="{% if '/messages-from-users/' == request.path %}active{% endif %}">Messages
+                                from users</a></li>
                         </ul>
                     {% endif %}
 

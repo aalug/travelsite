@@ -1,8 +1,0 @@
-[{
-        "model": "ecommerce.producttype",
-        "id": "1",
-        "fields": {
-            "name": "shoes"
-        }
-    }
-]

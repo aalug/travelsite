@@ -18,12 +18,12 @@ urlpatterns = [
     path('shop/', include('ecommerce.urls')),
 
     # API / Search
-    path("api/inventory/category/all/", CategoryList.as_view()),
+    path('api/inventory/category/all/', CategoryList.as_view()),
     path(
-        "api/inventory/products/category/<str:query>/",
+        'api/inventory/products/category/<str:query>/',
         ProductByCategory.as_view(),
     ),
-    path("api/inventory/<str:query>/", ProductInventoryByWebId.as_view()),
-    path("api/search/<str:query>/", SearchProductInventory.as_view()),
+    path('api/inventory/<str:query>/', ProductInventoryByWebId.as_view()),
+    path('api/search/<str:query>/', SearchProductInventory.as_view(), name='search-api'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

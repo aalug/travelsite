@@ -386,3 +386,43 @@ input[type="checkbox"], input[type="radio"] {
     padding-left: 3px;
     border-radius: 2px;
 }
+
+.search-box {
+    margin-bottom: 30px;
+}
+
+.search-box input {
+    border: none;
+    border-bottom: 2px solid grey;
+    outline: none;
+    width: 100%;
+}
+
+.search-box input:active, input:focus {
+    border-bottom: 2px solid #3d3c3c;
+    width: 103%;
+}
+
+.search-box button {
+    outline: none;
+    padding: 5px 8px;
+    float: right;
+    margin-top: 3px;
+    background-color: rgb(30, 147, 117);
+    border-radius: 3px;
+    border: solid 1px grey;
+    color: white;
+}
+
+.search-box button:hover {
+    background-color: rgba(30, 147, 117, 0.58);
+}
+
+#show-hide-filters-btn {
+    outline: none;
+    border: solid 1px #b2b0b0;
+    background-color: #c7c3c3;
+    padding: 5px;
+    border-radius: 3px;
+}
+

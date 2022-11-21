@@ -48,33 +48,8 @@
                                                 </h3>
                                             </a>
                                         </div>
-                                        <div class="col-lg-3">
-                                            <div class="sidebar">
-                                                <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <div class="month">
-                                                            <ul>
-                                                                {% for cat_parent, cat_children in all_categories.items %}
-                                                                    <li>
-                                                                        <a href="{% url 'products-by-category' cat_parent.slug %}"
-                                                                           style="font-weight: bold !important; font-size: 20px !important;">
-                                                                            {{ cat_parent|title }}</a>
-                                                                    </li>
-                                                                    {% for child in cat_children %}
-                                                                        <li>
-                                                                            <a href="{% url 'products-by-category' child.slug %}"
-                                                                               style="font-size: 16px !important; text-indent: 20px !important; ">
-                                                                                > {{ child|title }}</a>
-                                                                        </li>
-                                                                    {% endfor %}
-                                                                    <br>
-                                                                {% endfor %}
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        {% include 'includes/categories_sidebar.html' %}
+
                                         <div class="col-lg-9">
                                             <div class="row">
                                                 <div class="col-lg-12">
@@ -107,7 +82,8 @@
                                                                                 </div>
                                                                                 {#                                                                        ==================== PRICE ==========================#}
                                                                                 {% if product_inventory.is_on_sale %}
-                                                                                    <h6 style="font-weight: bold; color: green; padding-top: 10px;"><span style="color: grey; text-decoration: line-through; font-size: 16px; font-weight:normal; padding-top: 10px;">
+                                                                                    <h6 style="font-weight: bold; color: green; padding-top: 10px;"><span
+                                                                                            style="color: grey; text-decoration: line-through; font-size: 16px; font-weight:normal; padding-top: 10px;">
                                                                                         {{ product_inventory.store_price }} </span>{{ product_inventory.sale_price }}
                                                                                         €</h6>
                                                                                 {% else %}
@@ -148,7 +124,10 @@
                                                                                                 </li>
                                                                                                 {% for v in values %}
                                                                                                     <li style="margin: auto !important;"
-                                                                                                        class="flags-icon">{% if key == 'size' or key == 'language' %}{{ v|upper}}{% else %}{{ v|title }}{% endif %}
+                                                                                                        class="flags-icon">
+                                                                                                        {% if key == 'size' or key == 'language' %}
+                                                                                                            {{ v|upper }}{% else %}
+                                                                                                            {{ v|title }}{% endif %}
                                                                                                         {% if key == 'language' %}
                                                                                                             {% if v == 'pl' %}
                                                                                                                 <img src="{% static 'images/flags/pl.svg' %}"
@@ -231,7 +210,8 @@
                                                                                     {% endif %}
                                                                                 </div>
                                                                                 {% if product_inventory.is_on_sale %}
-                                                                                    <h6 style="font-weight: bold; color: green; padding-top: 10px;"><span style="color: grey; text-decoration: line-through; font-size: 16px; font-weight:normal; padding-top: 10px;">
+                                                                                    <h6 style="font-weight: bold; color: green; padding-top: 10px;"><span
+                                                                                            style="color: grey; text-decoration: line-through; font-size: 16px; font-weight:normal; padding-top: 10px;">
                                                                                         {{ product_inventory.store_price }} </span>{{ product_inventory.sale_price }}
                                                                                         €</h6>
                                                                                 {% else %}
@@ -271,7 +251,10 @@
                                                                                                 </li>
                                                                                                 {% for v in values %}
                                                                                                     <li style="margin: auto !important;"
-                                                                                                        class="flags-icon">{% if key == 'size' or key == 'language' %}{{ v|upper}}{% else %}{{ v|title }}{% endif %}
+                                                                                                        class="flags-icon">
+                                                                                                        {% if key == 'size' or key == 'language' %}
+                                                                                                            {{ v|upper }}{% else %}
+                                                                                                            {{ v|title }}{% endif %}
                                                                                                         {% if key == 'language' %}
                                                                                                             {% if v == 'pl' %}
                                                                                                                 <img src="{% static 'images/flags/pl.svg' %}"
@@ -352,7 +335,8 @@
                                                                                     {% endif %}
                                                                                 </div>
                                                                                 {% if product_inventory.is_on_sale %}
-                                                                                    <h6 style="font-weight: bold; color: green; padding-top: 10px;"><span style="color: grey; text-decoration: line-through; font-size: 16px; font-weight:normal; padding-top: 10px;">
+                                                                                    <h6 style="font-weight: bold; color: green; padding-top: 10px;"><span
+                                                                                            style="color: grey; text-decoration: line-through; font-size: 16px; font-weight:normal; padding-top: 10px;">
                                                                                         {{ product_inventory.store_price }} </span>{{ product_inventory.sale_price }}
                                                                                         €</h6>
                                                                                 {% else %}
@@ -369,7 +353,10 @@
                                                                                                         class="font-weight-bold">{{ key|title }}:
                                                                                                     </li>
                                                                                                     {% for v in values %}
-                                                                                                        <li style="margin: auto !important;">{% if key == 'size' or key == 'language' %}{{ v|upper}}{% else %}{{ v|title }}{% endif %}</li>
+                                                                                                        <li style="margin: auto !important;">
+                                                                                                            {% if key == 'size' or key == 'language' %}
+                                                                                                                {{ v|upper }}{% else %}
+                                                                                                                {{ v|title }}{% endif %}</li>
                                                                                                     {% endfor %}
                                                                                                 {% endif %}
                                                                                             {% endfor %}
@@ -392,7 +379,10 @@
                                                                                                 </li>
                                                                                                 {% for v in values %}
                                                                                                     <li style="margin: auto !important;"
-                                                                                                        class="flags-icon">{% if key == 'size' or key == 'language' %}{{ v|upper}}{% else %}{{ v|title }}{% endif %}
+                                                                                                        class="flags-icon">
+                                                                                                        {% if key == 'size' or key == 'language' %}
+                                                                                                            {{ v|upper }}{% else %}
+                                                                                                            {{ v|title }}{% endif %}
                                                                                                         {% if key == 'language' %}
                                                                                                             {% if v == 'pl' %}
                                                                                                                 <img src="{% static 'images/flags/pl.svg' %}"
@@ -494,13 +484,14 @@
                                                                                 {% endif %}
                                                                             </div>
                                                                             {% if product_inventory.is_on_sale %}
-                                                                                    <h6 style="font-weight: bold; color: green; padding-top: 10px;"><span style="color: grey; text-decoration: line-through; font-size: 16px; font-weight:normal; padding-top: 10px;">
+                                                                                <h6 style="font-weight: bold; color: green; padding-top: 10px;"><span
+                                                                                        style="color: grey; text-decoration: line-through; font-size: 16px; font-weight:normal; padding-top: 10px;">
                                                                                         {{ product_inventory.store_price }} </span>{{ product_inventory.sale_price }}
-                                                                                        €</h6>
-                                                                                {% else %}
-                                                                                    <h6 style="padding-top: 10px;">{{ product_inventory.store_price }}
-                                                                                        €</h6>
-                                                                                {% endif %}
+                                                                                    €</h6>
+                                                                            {% else %}
+                                                                                <h6 style="padding-top: 10px;">{{ product_inventory.store_price }}
+                                                                                    €</h6>
+                                                                            {% endif %}
                                                                             {% if 'color' in attr_values %}
                                                                                 <div class="attrs-values-list"
                                                                                      style="width: 68% !important;">
@@ -534,7 +525,10 @@
                                                                                             </li>
                                                                                             {% for v in values %}
                                                                                                 <li style="margin: auto !important;"
-                                                                                                    class="flags-icon">{% if key == 'size' or key == 'language' %}{{ v|upper}}{% else %}{{ v|title }}{% endif %}
+                                                                                                    class="flags-icon">
+                                                                                                    {% if key == 'size' or key == 'language' %}
+                                                                                                        {{ v|upper }}{% else %}
+                                                                                                        {{ v|title }}{% endif %}
                                                                                                     {% if key == 'language' %}
                                                                                                         {% if v == 'pl' %}
                                                                                                             <img src="{% static 'images/flags/pl.svg' %}"
