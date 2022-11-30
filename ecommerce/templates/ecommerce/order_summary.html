@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Summary{% endblock %}
+
+{% block content %}
+    <div class="sum-table">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Taxes</th>
+                <th scope="col">Tax Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for order_item, tax, tax_amount, attribute_values in tax_data %}
+                {% ifchanged order_item.product_inventory.sku %}
+                    <tr>
+                        <th scope="row">
+                            {{ order_item|title }}
+                            {% for key, value in attribute_values.items %}
+                                <br><small>{{ key|title }}: {{ value|upper }}</small>
+                            {% endfor %}
+                        </th>
+                        <td>{{ order_item.quantity }}</td>
+                        <td>{{ order_item.amount }} €</td>
+                        <td>{{ tax.tax_type|title }} ({{ tax.tax_percentage }}%)</td>
+                        <td>{{ tax_amount }} €</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ tax.tax_type|title }} ({{ tax.tax_percentage }}%)</td>
+                        <td>{{ tax_amount }} €</td>
+                    </tr>
+                {% endifchanged %}
+            {% endfor %}
+            </tbody>
+        </table>
+        <h5 class="float-right">TOTAL: <span class="font-weight-bold">{{ total_amount }}</span> €</h5>
+        <div class="to-checkout">
+              <a class="previous-step" href="{% url 'cart' %}">
+                <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
+            </a>
+            <a class="next-step" href="{% url 'checkout' %}">
+                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+
+
+{% endblock %}

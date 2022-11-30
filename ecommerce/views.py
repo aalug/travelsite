@@ -2,16 +2,21 @@
 
 import json
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 from elasticsearch_dsl import Q
 
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from django.views import View
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView, TemplateView, RedirectView, DetailView, FormView
 
-from .models import Category, Product, ProductInventory, Stock, Media
-from .utils import get_all_products_attribute_values, get_categories_with_parents_and_children, size_sorting_key, \
-    get_specific_attribute_values, get_filters, get_queryset_with_filters
+from accounts.models import UserProfile
+from .forms import OrderForm
+from .models import Category, Product, ProductInventory, Stock, Media, Cart, OrderItem, Tax, Order, Payment, PlacedOrder
+from .utils import get_all_products_attribute_values, get_categories_with_parents_and_children, \
+    get_specific_attribute_values, get_filters, get_queryset_with_filters, generate_order_number, \
+    generate_transaction_id, send_notification
 
 from search.documents import ProductInventoryDocument
 from search.serializers import ProductInventorySearchSerializer
@@ -174,6 +179,9 @@ class ProductDetailView(TemplateView):
 
 
 class SearchProductInventoryView(View):
+    """View for handling searching for products. It gets data
+       from request.GET and returns data with help of elasticsearch
+       and other features from search app."""
     productinventory_serializer = ProductInventorySearchSerializer
     search_document = ProductInventoryDocument
 
@@ -234,3 +242,365 @@ class SearchProductInventoryView(View):
             }
 
         return render(request, 'ecommerce/search.html', context)
+
+
+class CartView(LoginRequiredMixin, TemplateView):
+    """Cart view, gets OrderItem objects and additional data
+       such us images and attribute values. If there is
+       no OrderItems is_empty is set to False."""
+    template_name = 'ecommerce/cart.html'
+
+    def get_cart_data(self) -> list[tuple[dict[str: any], dict[str: any], dict[str: any]]]:
+        """Method gets additional data for every OrderItem,
+           such as images (Media)."""
+        cart, created = Cart.objects.get_or_create(user=self.request.user)
+        cart_items = OrderItem.objects.filter(cart=cart)
+        data = []
+        if cart_items:
+            for item in cart_items:
+                image = Media.objects.filter(product_inventory=item.product_inventory, is_feature=True)
+                attribute_values = get_specific_attribute_values(item.product_inventory)
+                if image:
+                    image = image[0]
+                d = ({'cart_item': item}, {'image': image}, {'attribute_values': attribute_values})
+                data.append(d)
+        return data
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cart_items = self.get_cart_data()
+        context['is_empty'] = len(cart_items) == 0
+        context['cart_items'] = cart_items
+        context['cart'] = get_object_or_404(Cart, user=self.request.user)
+        return context
+
+
+class AddToCartView(LoginRequiredMixin, RedirectView):
+    """RedirectView that gets sku of choosem ProductInventory and then
+       1. Fetches Cart if it exists or creates one if it does not.
+       2. Fetches OrderItem (and increments values) or creates one.
+       3. Redirects to cart page."""
+
+    @staticmethod
+    def if_cart_not_created(product_inventory, user, cart):
+        try:
+            # if there is OrderItem, that means that user is adding the same
+            # item to the cart for the second, third... time
+            order_item = OrderItem.objects.get(cart=cart, product_inventory=product_inventory)
+        except OrderItem.DoesNotExist:
+            if product_inventory.is_on_sale:
+                price = product_inventory.sale_price
+            else:
+                price = product_inventory.store_price
+
+            order_item = OrderItem.objects.create(
+                user=user,
+                cart=cart,
+                product_inventory=product_inventory,
+                price=price,
+                amount=price  # quantity is 1, so the price = amount
+            )
+            order_item.save()
+        else:
+            order_item.quantity += 1
+            order_item.amount += order_item.price
+            order_item.save()
+        finally:
+            cart.total_amount += order_item.price
+            cart.quantity += 1
+            cart.save()
+
+    @staticmethod
+    def if_cart_created(product_inventory, user, cart):
+        """Cart was just created -> there is no OrderItems."""
+        if product_inventory.is_on_sale:
+            price = product_inventory.sale_price
+        else:
+            price = product_inventory.store_price
+
+        order_item = OrderItem.objects.create(
+            user=user,
+            cart=cart,
+            product_inventory=product_inventory,
+            price=price,
+            amount=price  # quantity is 1, so the price = amount
+        )
+        order_item.save()
+        cart.total_amount += order_item.price
+        cart.quantity += 1
+        cart.save()
+
+    def get_or_create_cart_and_order_item(self):
+        sku = self.request.GET.get('sku')
+        product_inventory = get_object_or_404(ProductInventory, sku=sku)
+        user = self.request.user
+        cart, created = Cart.objects.get_or_create(user=user)
+        if created:
+            self.if_cart_created(product_inventory, user, cart)
+        else:
+            self.if_cart_not_created(product_inventory, user, cart)
+
+    def get_redirect_url(self):
+        self.get_or_create_cart_and_order_item()
+        return reverse_lazy('cart')
+
+
+class DeleteOrderItemView(RedirectView):
+    """View removes relation between OrderItem and user's cart
+       and updates other cart values."""
+
+    def delete_order_item(self):
+        """Method fetches (sku) OrderItem and removes it from user's cart."""
+        sku = self.kwargs.get('sku')
+        to_delete_item = get_object_or_404(OrderItem,
+                                           product_inventory__sku=sku,
+                                           user=self.request.user)
+        cart = to_delete_item.cart
+        # update cart
+        cart.quantity -= to_delete_item.quantity
+        cart.total_amount -= to_delete_item.amount
+        cart.save()
+        to_delete_item.delete()
+
+    def get_redirect_url(self, **kwargs):
+        self.delete_order_item()
+        return reverse_lazy('cart')
+
+
+class DeleteCartView(RedirectView):
+    """View deletes cart of logged-in user."""
+
+    def delete_cart_items(self):
+        """Delete all OrderItem objects from Cart."""
+        OrderItem.objects.filter(cart__user=self.request.user).delete()
+        cart = get_object_or_404(Cart, user=self.request.user)
+        cart.quantity = 0
+        cart.total_amount = 0
+        cart.total_tax_amount = 0
+        cart.save()
+
+    def get_redirect_url(self):
+        self.delete_cart_items()
+        return reverse_lazy('cart')
+
+
+class OrderConfirmationView(LoginRequiredMixin, TemplateView):
+    """View handles order confirmation."""
+    template_name = 'ecommerce/order_summary.html'
+
+    def get_data(self):
+        cart = get_object_or_404(Cart, user=self.request.user)
+        order_items = OrderItem.objects.filter(cart=cart)
+        tax_data = []
+        for item in order_items:
+            taxes = Tax.objects.filter(product_type=item.product_inventory.product_type)
+            attribute_values = get_specific_attribute_values(item.product_inventory)
+            for tax in taxes:
+                amount = item.amount * tax.tax_percentage / 100
+                data = (item, tax, amount, attribute_values)
+                tax_data.append(data)
+
+        return tax_data
+
+    def get_total_amount_with_taxes(self):
+        """Returns a tuple of total amount and total tax amount."""
+        data = self.get_data()
+        total_tax_amount = 0
+        for item, tax, amount, attribute_values in data:
+            total_tax_amount += amount
+
+        cart = get_object_or_404(Cart, user=self.request.user)
+        total_cart_amount = cart.total_amount
+        cart.total_tax_amount = total_tax_amount
+        cart.save()
+
+        return total_cart_amount, total_tax_amount
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tax_data = self.get_data()
+        total_cart_amount, total_tax_amount = self.get_total_amount_with_taxes()
+        context['tax_data'] = tax_data
+        context['total_amount'] = total_cart_amount + total_tax_amount
+        return context
+
+
+class CheckOutView(LoginRequiredMixin, FormView):
+    """View for placing an order."""
+    template_name = 'ecommerce/checkout.html'
+    success_url = reverse_lazy('payment')
+    form_class = OrderForm
+
+    def get_initial(self):
+        initial = super().get_initial()
+        user_profile = get_object_or_404(UserProfile, user=self.request.user)
+        initial['email'] = self.request.user.email
+        initial['address'] = user_profile.address
+        initial['country'] = user_profile.country
+        initial['state'] = user_profile.state
+        initial['city'] = user_profile.city
+        initial['pin_code'] = user_profile.pin_code
+        return initial
+
+    def form_valid(self, form):
+        cart = get_object_or_404(Cart, user=self.request.user)
+        order = Order()
+        order.first_name = form.cleaned_data['first_name']
+        order.last_name = form.cleaned_data['last_name']
+        order.phone = form.cleaned_data['phone']
+        order.email = form.cleaned_data['email']
+        order.address = form.cleaned_data['address']
+        order.country = form.cleaned_data['country']
+        order.state = form.cleaned_data['state']
+        order.city = form.cleaned_data['city']
+        order.pin_code = form.cleaned_data['pin_code']
+        order.user = self.request.user
+        order.total = cart.total_amount + cart.total_tax_amount
+        order.total_tax = cart.total_tax_amount
+        order.payment_method = self.request.POST['payment-method']
+        order.order_number = generate_order_number(self.request.user.id)
+        order.save()
+        return super().form_valid(form)
+
+
+class PaymentView(LoginRequiredMixin, View):
+    """View for faking payment process - just waits few seconds
+       and proceeds with ordering process."""
+    template_name = 'ecommerce/payment.html'
+
+    def create_payment(self):
+        order = Order.objects.filter(user=self.request.user).order_by('-created_at')[0]
+        amount = order.total
+        payment = Payment.objects.create(
+            user=self.request.user,
+            transaction_id=generate_transaction_id(order),
+            payment_method=str(order.payment_method),
+            amount=amount,
+            status='Completed'
+        )
+        order.status = 'Accepted'
+        order.is_ordered = True
+        payment.save()
+        order.save()
+
+    def get(self, request, *args, **kwargs):
+        self.create_payment()
+        return render(request, self.template_name)
+
+
+class OrderPlacedView(LoginRequiredMixin, View):
+    """View finished ordering page."""
+    template_name = 'ecommerce/order_placed.html'
+
+    def create_placed_order(self):
+        """Create PlaceOrder for storing history of purchases."""
+        cart = get_object_or_404(Cart, user=self.request.user)
+        total_amount = cart.total_amount + cart.total_tax_amount
+        order = Order.objects.filter(user=self.request.user).order_by('-created_at')[0]
+        order_items = OrderItem.objects.filter(cart=cart)
+        order_items_list = []
+        for item in order_items:
+            d = {
+                'product': str(item.product_inventory),
+                'sku': item.product_inventory.sku,
+                'quantity': item.quantity
+            }
+            order_items_list.append(d)
+        order_items_json = json.dumps(order_items_list, indent=4)
+
+        place_order = PlacedOrder.objects.create(
+            user=self.request.user,
+            order_items=order_items_json,
+            total_amount=total_amount,
+            order_number=order.order_number,
+            order_date=order.created_at
+        )
+        place_order.save()
+
+    def delete_cart_items(self):
+        """Delete OrderItems from Cart and update Cart values."""
+        OrderItem.objects.filter(cart__user=self.request.user).delete()
+        cart = get_object_or_404(Cart, user=self.request.user)
+        cart.quantity = 0
+        cart.total_amount = 0
+        cart.total_tax_amount = 0
+        cart.save()
+
+    def update_product_inventory_data(self):
+        """Update ProductInventory data. Decrease value of units
+           in stock of ProductInventory and increase units_sold."""
+        order_items = OrderItem.objects.filter(cart__user=self.request.user)
+        for item in order_items:
+            stock = get_object_or_404(Stock, product_inventory=item.product_inventory)
+            stock.units -= item.quantity
+            stock.units_sold += item.quantity
+            stock.save()
+
+    def send_notification_email(self):
+        order = Order.objects.filter(user=self.request.user).order_by('-created_at')[0]
+        mail_subject = 'Your order was placed successfully!'
+        mail_template = 'ecommerce/emails/order_notification.html'
+        context = {
+            'user': self.request.user,
+            'order': order,
+            'to_email': order.email,
+        }
+        send_notification(self.request, mail_subject, mail_template, context)
+
+    def get(self, request, *args, **kwargs):
+        self.create_placed_order()
+        self.update_product_inventory_data()
+        self.delete_cart_items()
+        self.send_notification_email()
+        return render(request, self.template_name)
+
+
+class OrderHistoryView(LoginRequiredMixin, ListView):
+    """view handles order history of logged-in user."""
+    template_name = 'ecommerce/order_history.html'
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        place_orders = PlacedOrder.objects.filter(user=self.request.user).order_by('-order_date')
+        orders = []
+        for order in place_orders:
+            data = json.loads(order.order_items)
+            d = {
+                'order': order,
+                'order_data': data
+            }
+            orders.append(d)
+        return orders
+
+
+class OrderHistoryDetailView(LoginRequiredMixin, TemplateView):
+    """View displaying details of placed order."""
+    template_name = 'ecommerce/detail_order_history.html'
+
+    def get_products_inventories_data(self):
+        order_number = self.kwargs.get('order_number')
+        order_items_json = get_object_or_404(PlacedOrder, order_number=order_number).order_items
+        order_items = json.loads(order_items_json)
+        products_data = []
+        for item in order_items:
+            sku = item.get('sku')
+            product_inventory = get_object_or_404(ProductInventory, sku=sku)
+            image = Media.objects.filter(product_inventory=product_inventory, is_feature=True)
+            if image:
+                image = image[0]
+            attribute_values = get_specific_attribute_values(product_inventory)
+            data = {
+                'product_inventory': product_inventory,
+                'image': image,
+                'quantity': item.get('quantity'),
+                'attribute_values': attribute_values
+            }
+            products_data.append(data)
+        return products_data
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['products_data'] = self.get_products_inventories_data()
+        order = get_object_or_404(Order, order_number=self.kwargs.get('order_number'))
+        context['order'] = order
+        return context

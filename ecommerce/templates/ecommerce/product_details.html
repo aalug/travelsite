@@ -41,26 +41,27 @@
                         <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
                         <!-- Expanded image -->
                         <img id="expandedImg" style="width:100%">
-
-                        <!-- Image text -->
                         <div id="imgtext"></div>
                     </div>
                 </div>
                 <div class="col-lg-3">
-                    {% if is_to_choose %}
-                        <form action="" method="GET">
+                    <form action="{% url 'add-to-cart' %}" method="GET" id="add-to-cart-form">
+                        {% if is_to_choose %}
                             <ul class="choose-attr-value">
                                 <li class="font-weight-bold">CHOOSE</li>
                                 {% for product_inventory, attr_value, units in products_data %}
                                     {% for key, value in attr_value.items %}
                                         {% if key == 'size' or key == 'language' %}
                                             <li>
-                                                <input type="radio" id="id_{{ value }}" name="{{ key }}"
+                                                <input type="radio" id="id_{{ value }}"
                                                        onchange="setPrice(this,
-                                                               {% if product_inventory.is_on_sale %}true{% else %}false{% endif %});" value="{{ value }}"
+                                                               {% if product_inventory.is_on_sale %}true{% else %}false{% endif %});"
+                                                       data-sku="{{ product_inventory.sku }}"
                                                        {% if units == 0 %}disabled{% endif %}
                                                        data-price="
-                                                               {% if product_inventory.is_on_sale %}{{ product_inventory.sale_price }}{% else %}{{ product_inventory.store_price }}{% endif %}"/>
+                                                               {% if product_inventory.is_on_sale %}{{ product_inventory.sale_price }}{% else %}{{ product_inventory.store_price }}{% endif %}"
+                                                        name="attr"/>
+
                                                 <label for="id_{{ value }}"
                                                        {% if units == 0 %}disabled{% endif %}>{{ value|upper }}
                                                     {% if product_inventory.is_on_sale %}
@@ -71,8 +72,20 @@
                                     {% endfor %}
                                 {% endfor %}
                             </ul>
-                        </form>
-                    {% endif %}
+                            <input type="hidden" id="sku-input" name="sku">
+                            <button onclick="checkAddToCartAndSetSkuValue(true);" type="submit"
+                                    class="add-to-cart" id="submit-choice-btn" disabled>
+                                Add To Cart
+                            </button>
+                        {% else %}
+                            <input type="hidden" id="sku-input" name="sku" value="{{ products_data.0.0.sku }}">
+                            <button onclick="checkAddToCartAndSetSkuValue(false);" type="submit"
+                                    class="add-to-cart">
+                                Add To Cart
+                            </button>
+                        {% endif %}
+
+                    </form>
                 </div>
             </div>
         </div>
@@ -158,11 +171,17 @@
     {{ images.0.image.url|json_script:"first-img" }}
 
     <script>
+       // loads first image of all images as expanded
+        window.onload = function () {
+            let firstImg = document.getElementById('id_image_1');
+            photoGallery(firstImg);
+        }
+
         function photoGallery(imgs) {
             // Get the expanded image
-            var expandImg = document.getElementById("expandedImg");
+            let expandImg = document.getElementById("expandedImg");
             // Get the image text
-            var imgText = document.getElementById("imgtext");
+            let imgText = document.getElementById("imgtext");
             // Use the same src in the expanded image as the image being clicked on from the grid
             expandImg.src = imgs.src;
             // Use the value of the alt attribute of the clickable image as text inside the expanded image
@@ -173,6 +192,8 @@
 
         function setPrice(input, isOnSale) {
             if (input.checked === true) {
+                enableButton(); // this means that radio was checked and now
+                                // submit button will be enabled
                 let price = input.dataset.price;
                 let priceDisplay = document.getElementById('price');
                 priceDisplay.textContent = price + '€';
@@ -184,10 +205,27 @@
             }
         }
 
-        // loads first image of all images as expanded
-        window.onload = function() {
-            let firstImg = document.getElementById('id_image_1');
-            photoGallery(firstImg);
+        /**
+         * function that on clicking the submit button:
+         * 1. Checks is the radio input checked (if it exists)
+         * 2. Gets sku of chosen product inventory and sets value
+         *    of input to it (if there is a choice to be made).
+         */
+        function checkAddToCartAndSetSkuValue(isChoice) {
+            let inputs = document.getElementsByTagName('input');
+            if (isChoice) {
+                let skuInput = document.getElementById('sku-input');
+                for (let i = 0; i < inputs.length; ++i) {
+                    if (inputs[i].checked === true) {
+                        let x = document.getElementById(inputs[i].id);
+                        skuInput.value = x.dataset.sku;
+                    }
+                }
+            }
+        }
+
+        function enableButton() {
+            document.getElementById('submit-choice-btn').disabled = false;
         }
 
     </script>

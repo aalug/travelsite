@@ -1,7 +1,13 @@
 """Helper functions for views in ecommerce app."""
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
 from django.shortcuts import get_object_or_404
+from django.conf import settings
+from django.template.loader import render_to_string
 
 from ecommerce.models import ProductAttributeValues, Category, ProductInventory, Media, Stock
+
+import datetime
 
 
 def size_sorting_key(element):
@@ -78,7 +84,7 @@ def get_categories_with_parents_and_children():
     return categories_dict
 
 
-def get_filters(slug: str=None) -> dict[str: str]:
+def get_filters(slug: str = None) -> dict[str: str]:
     """Method gets and returns filters. If argument 'slug' is passed,
        function will return filters appropriate to category with that slug.
        If 'slug' will be left as None - function will return all filters."""
@@ -151,3 +157,31 @@ def get_queryset_with_filters(request_get, slug=None, products=None) -> list[tup
         data = (product_inventory, units, image, attribute_values)
         products_data.append(data)
     return products_data
+
+
+def generate_order_number(pk: int) -> str:
+    current_datetime = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+    order_number = f'{current_datetime}{pk}'
+    return order_number
+
+
+def generate_transaction_id(order) -> str:
+    """Generating fake transaction id."""
+    current_datetime = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+    transaction_id = f'{current_datetime}|{order.payment_method}|{order.user}'
+    return transaction_id
+
+
+def send_notification(request, mail_subject, mail_template, context):
+    """Send email notification."""
+    from_email = settings.DEFAULT_FROM_EMAIL
+    current_site = get_current_site(request)
+    context.update({'domain': current_site})
+    message = render_to_string(mail_template, context)
+    if isinstance(context['to_email'], str):
+        to_email = [context['to_email']]
+    else:
+        to_email = context['to_email']
+    mail = EmailMessage(mail_subject, message, from_email, to=to_email)
+    mail.content_subtype = 'html'
+    mail.send()

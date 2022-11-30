@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Detailed Order History{% endblock %}
+
+{% block content %}
+
+    <div class="container" style="margin: 100px auto 150px auto;">
+        <div class="col-lg-10" style="margin-right: auto; margin-left: auto;">
+            <div class="row">
+                <div class="col-lg-8">
+                    <ul>
+                        {% for data in products_data %}
+                            <li>
+                                <a href="{% url 'product-details' data.product_inventory.product.slug %}"
+                                   class="item-a">
+                                    <div class="detail-history">
+                                        <div class="row detail-history-inner">
+                                            <div class="col-lg-3">
+                                                <img src="{{ data.image.image.url }}" alt="{{ data.image.alt_text }}">
+                                            </div>
+                                            <div class="col-lg-9">
+                                                <div class="row">
+                                                    <div class="col-lg-8">
+                                                        <h6>Product: <span
+                                                                class="font-weight-bold">{{ data.product_inventory }}</span>
+                                                        </h6><br>
+                                                        {% for attribute, value in data.attribute_values.items %}
+                                                            {{ attribute|title }}: {{ value|upper }}<br>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        Quantity: {{ data.quantity }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        {% endfor %}
+
+                    </ul>
+                </div>
+                <div class="col-lg-4 float-right">
+                    <h4 class="font-weight-bold ">TOTAL: {{ order.total }} €</h4>
+                    <h6 class="font-weight-bold ">TAX: {{ order.total_tax }} €</h6><br>
+                    <h5>ORDER DATE: <br>{{ order.created_at }}</h5><br><br>
+                    <h5>SENT TO:</h5>
+                    <ul class="order-address">
+                        <li>{{ order.first_name }} {{ order.last_name }}</li>
+                        <li>{{ order.address }}</li>
+                        <li>{{ order.city }}, {{ order.state }} {{ order.pin_code }}</li>
+                        <li>{{ order.country }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}

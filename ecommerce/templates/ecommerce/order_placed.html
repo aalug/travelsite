@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Placed Successfully{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 order-placed">
+                <h2>Order was placed successfully!</h2><br><br>
+                <h3>Go to:</h3><br>
+                <ul>
+                    <li><h3><a href="{% url 'order-history' %}"><i class="fa fa-history" aria-hidden="true"></i>
+                        Check Your Order History</a></h3></li>
+                    <li><h3><a href="{% url 'home' %}"><i class="fa fa-home" aria-hidden="true"></i> Home Page</a></h3>
+                    </li>
+                    <li><h3><a href="{% url 'shop' %}"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Shop</a>
+                    </h3></li>
+                </ul>
+
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

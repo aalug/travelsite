@@ -9,7 +9,13 @@
                     <a href="{% url 'home' %}" class="logo-home"><img class="logo-home"
                                                                       src="{% static 'images/logo.png' %}" alt=""></a>
                     <!-- ***** Logo End ***** -->
-
+                    <!-- ***** Shopping cart start (if in ecommerce app) -->
+                    {#                    {% if '/shop/' in request.path %}#}
+                    {#                        <a class="shopping-cart" href="{% url 'cart' %}">#}
+                    {#                        <div><i class="fa fa-shopping-cart" aria-hidden="true"></i><p class="cart-qty">{{ cart_quantity }}</p></div>#}
+                    {#                        </a>#}
+                    {#                    {% endif %}#}
+                    <!-- ***** Shopping cart start -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
                         <li><a href="{% url 'home' %}" class="{% if '/' == request.path %}active{% endif %}">Home</a>
@@ -25,16 +31,32 @@
                                 class="fa fa-envelope" aria-hidden="true"></i> Your messages</a></li>
                     </ul>
 
-                    {% if request.user.is_staff %}
-                        <ul class="nav">
+                    <ul class="nav">
+                        {% if request.user.is_staff %}
+
                             <li><a href="{% url 'newsletter' %}"
                                    class="{% if '/newsletter/' == request.path %}active{% endif %}">Newsletter</a>
                             </li>
                             <li><a href="{% url 'messages-from-users' %}"
                                    class="{% if '/messages-from-users/' == request.path %}active{% endif %}">Messages
                                 from users</a></li>
-                        </ul>
-                    {% endif %}
+                        {% endif %}
+                        {% if '/shop/' in request.path %}
+                            <li></li>
+                            <li></li>
+                             <li>
+                                <a class="{% if '/order-history/' in request.path or '/detail-order-history/' in request.path %}active{% endif %}" href="{% url 'order-history' %}">
+                                Order History</a>
+                            </li>
+                            <li>
+                                <a class="shopping-cart" href="{% url 'cart' %}">
+                                    <div><i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                        <div class="cart-qty"><p>{{ cart_quantity }}</p></div></div>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                    </ul>
 
                     <div class="log-reg-div">
                         {% if request.user.is_authenticated %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 countdown-payment">
+                <h1>The payment process is in progress<span id="countdown-dots"></span></h1>
+                <h2>Wait <span id="countdown"></span></h2>
+                <a href="{% url 'order-placed' %}">
+                    <div id="continue" class="continue-btn"><span>Continue</span></div>
+                </a>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block additional_js %}
+
+    <script>
+        let current = new Date();
+        let countDownDate = new Date(current.getTime() + 7000);
+
+        let x = setInterval(function () {
+            let now = new Date().getTime();
+            let distance = countDownDate - now;
+            let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            if (distance > 0) {
+                document.getElementById('countdown').innerHTML = seconds + 's ';
+                let dots = document.getElementById('countdown-dots');
+                if (dots.innerHTML.length < 3) {
+                    dots.innerHTML += '.';
+                } else {
+                    dots.innerHTML = '.';
+                }
+            } else {
+                document.getElementById('countdown').innerHTML = '0s';
+                document.getElementById('continue').style.display = 'block';
+            }
+        }, 1000);
+    </script>
+{% endblock %}

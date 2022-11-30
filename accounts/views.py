@@ -36,7 +36,7 @@ class RegisterUserView(SuccessMessageMixin, FormView):
         email = form.cleaned_data['email']
         password = form.cleaned_data['password']
         user = User.objects.create_user(email=email, username=username, password=password)
-        self.sent_email(user)
+        self.send_email(user)
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -44,7 +44,7 @@ class RegisterUserView(SuccessMessageMixin, FormView):
             messages.warning(self.request, 'You are already logged in!')
             return redirect('my-account')
 
-    def sent_email(self, user):
+    def send_email(self, user):
         """Method for sending verification email."""
         mail_subject = 'Please activate your account'
         email_template = 'accounts/emails/verification_email.html'
@@ -81,13 +81,13 @@ class LoginView(View):
             return redirect('login')
 
 
-class LogoutView(View):
+class LogoutView(RedirectView):
     """View for logging out."""
 
-    def get(self, request):
-        auth.logout(request)
-        messages.info(request, 'You are now logged out.')
-        return redirect('login')
+    def get_redirect_url(self):
+        auth.logout(self.request)
+        messages.info(self.request, 'You are now logged out.')
+        return reverse_lazy('login')
 
 
 class DashboardView(LoginRequiredMixin, View):

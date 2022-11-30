@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 from .models import Category, Product, ProductInventory, ProductType, ProductAttribute, \
-    ProductAttributeValue, Stock, Brand, Media, ProductAttributeValues, ProductTypeAttribute
+    ProductAttributeValue, Stock, Brand, Media, ProductAttributeValues, ProductTypeAttribute, Payment, Order, \
+    OrderItem, Cart, Tax, PlacedOrder
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -38,3 +39,9 @@ admin.site.register(ProductAttribute)
 admin.site.register(ProductAttributeValue)
 admin.site.register(ProductAttributeValues, ProductAttributeValuesAdmin)
 admin.site.register(ProductTypeAttribute)
+admin.site.register(Cart)
+admin.site.register(Tax)
+admin.site.register(Payment)
+admin.site.register(Order)
+admin.site.register(OrderItem)
+admin.site.register(PlacedOrder)

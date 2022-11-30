@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+    <div class="rent-venue-application">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10" style="margin-right: auto; margin-left: auto;">
+                    <div class="heading-text">
+                        <h4>Fill Out The Order Form</h4>
+                    </div>
+                    <div class="contact-form">
+                        <form id="contact" action="{% url 'checkout' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset>
+                                        <label>First Name:</label>
+                                        {{ form.first_name }}
+                                        {% if form.first_name.errors %}
+                                            {% for error in form.first_name.errors %}
+                                                <label style="color: red;">{{ error }}</label>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset>
+                                        <label>Last Name:</label>
+                                        {{ form.last_name }}
+                                        {% if form.last_name.errors %}
+                                            {% for error in form.last_name.errors %}
+                                                <label style="color: red;">{{ error }}</label>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset>
+                                        <label>Email:</label>
+                                        {{ form.email }}
+                                        {% if form.email.errors %}
+                                            {% for error in form.email.errors %}
+                                                <label style="color: red;">{{ error }}</label>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset>
+                                        <label>Phone Number:</label>
+                                        {{ form.phone }}
+                                        {% if form.phone.errors %}
+                                            {% for error in form.phone.errors %}
+                                                <label style="color: red;">{{ error }}</label>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-12 col-sm-12">
+                                    <fieldset>
+                                        <label>Address:</label>
+                                        {{ form.address }}
+                                        {% if form.address.errors %}
+                                            {% for error in form.address.errors %}
+                                                <label style="color: red;">{{ error }}</label>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset>
+                                        <label>Country:</label>
+                                        {{ form.country }}
+                                        {% if form.country.errors %}
+                                            {% for error in form.country.errors %}
+                                                <label style="color: red;">{{ error }}</label>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset>
+                                        <label>State:</label>
+                                        {{ form.state }}
+                                        {% if form.state.errors %}
+                                            {% for error in form.state.errors %}
+                                                <label style="color: red;">{{ error }}</label>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset>
+                                        <label>City:</label>
+                                        {{ form.city }}
+                                        {% if form.city.errors %}
+                                            {% for error in form.city.errors %}
+                                                <label style="color: red;">{{ error }}</label>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset>
+                                        <label>Pin Code:</label>
+                                        {{ form.pin_code }}
+                                        {% if form.pin_code.errors %}
+                                            {% for error in form.pin_code.errors %}
+                                                <label style="color: red;">{{ error }}</label>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </fieldset>
+                                </div>
+                                {% if form.non_field_errors %}
+                                    {% for error in form.non_field_errors %}
+                                        <label style="color: red; margin-left: 15px; padding-bottom: 20px;">{{ error }}</label>
+                                    {% endfor %}
+                                {% endif %}
+                                <h5>&nbsp&nbspSelect Payment Method</h5>
+                                <div class="payment-method">
+                                    <label>
+                                        <input type="radio" name="payment-method" value="PayPal" onchange="removeErrorMessage();">
+                                        <img src="{% static 'images/payment_methods/PayPal.png' %}" alt="paypal">
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="payment-method" value="OtherMethod" onchange="removeErrorMessage();">
+                                        <img src="{% static 'images/payment_methods/OtherMethod.png' %}"
+                                             alt="OtherMethod">
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="payment-method" value="DifferentMethod" onchange="removeErrorMessage();">
+                                        <img src="{% static 'images/payment_methods/DifferentMethod.png' %}"
+                                             alt="DifferentMethod">
+                                    </label>
+                                </div>
+                                <span class="text-danger payment-error" id="payment-method-error"></span>
+
+                                <div class="col-lg-12">
+                                    <fieldset>
+                                        <button type="submit" id="form-submit" onclick="return confirmPaymentMethod();"
+                                                class="submit-checkout">Submit
+                                        </button>
+                                    </fieldset>
+                                </div>
+                            {{ form.errors }}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block additional_js %}
+    <script>
+        function confirmPaymentMethod() {
+            let paymentMethods = document.getElementsByName('payment-method');
+            let isChecked = false;
+            for (let i = 0; i < paymentMethods.length; i++) {
+                if (paymentMethods[i].checked === true) {
+                    isChecked = true;
+                }
+            }
+            if (!isChecked) {
+                let errorMessage = document.getElementById('payment-method-error');
+                errorMessage.innerHTML = 'Select Payment Method';
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function removeErrorMessage() {
+            let errorMessage = document.getElementById('payment-method-error');
+            errorMessage.innerHTML = '';
+        }
+    </script>
+{% endblock %}

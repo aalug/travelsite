@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Cart{% endblock %}
+
+{% block content %}
+    <div class="cart-container">
+        {% if not is_empty %}
+            <h5>Your cart <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                <span class="float-right"><a href="{% url 'delete-cart' %}"
+                                             class="delete-cart">Remove All Items</a></span></h5>
+            <ul class="responsive-table">
+                <li class="cart-table-header">
+                    <div class="col col-1">Image</div>
+                    <div class="col col-2">Product</div>
+                    <div class="col col-3">Price</div>
+                    <div class="col col-4">Quantity</div>
+                </li>
+                {% for cart_item, image, attribute_values in cart_items %}
+                    <li class="table-row order-row">
+                        <div class="col col-1">
+                            <a href="{% url 'product-details' cart_item.cart_item.product_inventory.product.slug %}">
+                                <img src="{{ image.image.image.url }}" alt="{{ image.image.alt_text }}"
+                                     class="cart-img">
+                            </a>
+                        </div>
+                        <div class="col col-2">
+                            <a class="product-link-cart"
+                               href="{% url 'product-details' cart_item.cart_item.product_inventory.product.slug %}">
+                                {{ cart_item.cart_item }}<br>
+                                {% for key, value in attribute_values.attribute_values.items %}
+                                    <small>{{ key }}: {{ value|upper }}</small><br>
+                                {% endfor %}
+                            </a>
+                        </div>
+                        <div class="col col-3">{{ cart_item.cart_item.amount }} €</div>
+                        <div class="col col-4">
+                            {{ cart_item.cart_item.quantity }}
+                        </div>
+                        <div class="delete-item">
+                            <a href="{% url 'delete-order-item' cart_item.cart_item.product_inventory.sku %}">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </li>
+                {% endfor %}
+                <li class="table-row cart-summary">
+                    <div class="col sum-col-1">{{ cart.total_amount }} €</div>
+                    <div class="col sum-col-2">{{ cart.quantity }}</div>
+                    <div class="to-checkout to-checkout-1-step">
+                        <a href="{% url 'order' %}">
+                            <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </li>
+            </ul><br>
+        {% else %}
+            <h6 class="text-center">Your Cart Is Empty</h6>
+            <h6 class="text-center click-to-shop"><a href="{% url 'shop' %}">Click Here To Shop</a></h6>
+        {% endif %}
+    </div>
+
+{% endblock %}

@@ -39,11 +39,9 @@
                                 <article id='tabs-1'>
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <div class="heading float-left"><h2>Categories</h2></div>
                                             <a href="{% url 'products-by-category' category1_items.0.0.slug %}">
-                                                <h3 class="float-right category-name"
-                                                    style="padding: 12px 20px; border: solid 2px #2a8c58; border-radius: 4px;margin-bottom: 35px; margin-right: 70px;"><span
-                                                        style="font-weight: normal; font-size: 20px;">Category:</span> {{ category1_items.0.0|title }}
+                                                <h3 class="float-right category-name">
+                                                    <span>Category:</span> {{ category1_items.0.0|title }}
                                                     <i class="fa fa-arrow-down" aria-hidden="true"></i>
                                                 </h3>
                                             </a>
@@ -74,11 +72,9 @@
                                                                                         <p>{{ product_inventory.product.description }}</p>
                                                                                     </div>
                                                                                     {# =============== PRODUCT IMAGE =================#}
-                                                                                    {% if image %}
-                                                                                        <img class="product-img"
-                                                                                             src="{{ image.image.url }}"
-                                                                                             alt="{{ image.alt_text }}">
-                                                                                    {% endif %}
+                                                                                    <img class="product-img"
+                                                                                         src="{{ image.image.url }}"
+                                                                                         alt="{{ image.alt_text }}">
                                                                                 </div>
                                                                                 {#                                                                        ==================== PRICE ==========================#}
                                                                                 {% if product_inventory.is_on_sale %}
@@ -123,7 +119,7 @@
                                                                                                     class="font-weight-bold">{{ key|title }}:
                                                                                                 </li>
                                                                                                 {% for v in values %}
-                                                                                                    <li style="margin: auto !important;"
+                                                                                                    <li style="margin: auto !important; display: inline-block !important;"
                                                                                                         class="flags-icon">
                                                                                                         {% if key == 'size' or key == 'language' %}
                                                                                                             {{ v|upper }}{% else %}
@@ -146,9 +142,7 @@
                                                                                                                 <img src="{% static 'images/flags/it.svg' %}"
                                                                                                                      alt="">
                                                                                                             {% endif %}
-                                                                                                            <br>
                                                                                                         {% endif %}</li>
-                                                                                                    <br>
                                                                                                 {% endfor %}
                                                                                             {% endfor %}
                                                                                         </ul>
@@ -162,25 +156,22 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                             </div>
                                         </div>
 
                                         <!-- Header of the second category -->
-                                        <div class="col-lg-12">
+                                        <div class="col-lg-12 cat-items">
                                             <a href="{% url 'products-by-category' category2_items.0.0.slug %}">
-                                                <h3 class="float-right category-name"
-                                                    style="padding: 12px 20px; border: solid 2px #2a8c58;
-                                                    border-radius: 4px;margin-bottom: 35px; margin-right: 70px;"><span
-                                                        style="font-weight: normal; font-size: 20px;">Category:</span> {{ category2_items.0.0|title }}
+                                                <h3 class="float-right category-name">
+                                                    <span>Category:</span> {{ category2_items.0.0|title }}
                                                     <i class="fa fa-arrow-down" aria-hidden="true"></i>
                                                 </h3>
                                             </a>
                                         </div>
                                         <!-- Second category items -->
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-3 cat-items">
                                         </div>
-                                        <div class="col-lg-9">
+                                        <div class="col-lg-9 cat-items">
                                             <div class="row">
                                                 <div class="col-lg-12">
                                                     <div class="event-item">
@@ -203,11 +194,9 @@
                                                                                     <div class="product-description">
                                                                                         <p>{{ product_inventory.product.description }}</p>
                                                                                     </div>
-                                                                                    {% if image %}
-                                                                                        <img class="product-img"
-                                                                                             src="{{ image.image.url }}"
-                                                                                             alt="{{ image.alt_text }}">
-                                                                                    {% endif %}
+                                                                                    <img class="product-img"
+                                                                                         src="{{ image.image.url }}"
+                                                                                         alt="{{ image.alt_text }}">
                                                                                 </div>
                                                                                 {% if product_inventory.is_on_sale %}
                                                                                     <h6 style="font-weight: bold; color: green; padding-top: 10px;"><span
@@ -246,11 +235,11 @@
                                                                                     <div class="attrs-values-list">
                                                                                         <ul>
                                                                                             {% for key, values in attr_values.items %}
-                                                                                                <li style="margin: auto !important;"
+                                                                                                <li style="margin: auto !important; display: inline-block !important;"
                                                                                                     class="font-weight-bold">{{ key|title }}:
                                                                                                 </li>
                                                                                                 {% for v in values %}
-                                                                                                    <li style="margin: auto !important;"
+                                                                                                    <li style="margin: auto !important; display: inline-block !important;"
                                                                                                         class="flags-icon">
                                                                                                         {% if key == 'size' or key == 'language' %}
                                                                                                             {{ v|upper }}{% else %}
@@ -274,7 +263,7 @@
                                                                                                                      alt="">
                                                                                                             {% endif %}
                                                                                                         {% endif %}</li>
-                                                                                                    <br>
+
                                                                                                 {% endfor %}
                                                                                             {% endfor %}
                                                                                         </ul>
@@ -292,20 +281,18 @@
                                         </div>
 
                                         <!-- Header of the third category -->
-                                        <div class="col-lg-12">
+                                        <div class="col-lg-12 cat-items">
                                             <a href="{% url 'products-by-category' category3_items.0.0.slug %}">
-                                                <h3 class="float-right category-name"
-                                                    style="padding: 12px 20px; border: solid 2px #2a8c58; margin-top: 35px;
-                                                    border-radius: 4px;margin-bottom: 35px; margin-right: 70px;"><span
-                                                        style="font-weight: normal; font-size: 20px;">Category:</span> {{ category3_items.0.0|title }}
+                                                <h3 class="float-right category-name">
+                                                    <span>Category:</span> {{ category3_items.0.0|title }}
                                                     <i class="fa fa-arrow-down" aria-hidden="true"></i>
                                                 </h3>
                                             </a>
                                         </div>
                                         <!-- Third category items -->
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-3 cat-items">
                                         </div>
-                                        <div class="col-lg-9">
+                                        <div class="col-lg-9 cat-items">
                                             <div class="row">
                                                 <div class="col-lg-12">
                                                     <div class="event-item">
@@ -328,11 +315,9 @@
                                                                                     <div class="product-description">
                                                                                         <p>{{ product_inventory.product.description }}</p>
                                                                                     </div>
-                                                                                    {% if image %}
-                                                                                        <img class="product-img"
-                                                                                             src="{{ image.image.url }}"
-                                                                                             alt="{{ image.alt_text }}">
-                                                                                    {% endif %}
+                                                                                    <img class="product-img"
+                                                                                         src="{{ image.image.url }}"
+                                                                                         alt="{{ image.alt_text }}">
                                                                                 </div>
                                                                                 {% if product_inventory.is_on_sale %}
                                                                                     <h6 style="font-weight: bold; color: green; padding-top: 10px;"><span
@@ -350,13 +335,10 @@
                                                                                             {% for key, values in attr_values.items %}
                                                                                                 {% if key != 'color' %}
                                                                                                     <li style="margin: auto !important;"
-                                                                                                        class="font-weight-bold">{{ key|title }}:
+                                                                                                        class="font-weight-bold">{{ key }}:
                                                                                                     </li>
                                                                                                     {% for v in values %}
-                                                                                                        <li style="margin: auto !important;">
-                                                                                                            {% if key == 'size' or key == 'language' %}
-                                                                                                                {{ v|upper }}{% else %}
-                                                                                                                {{ v|title }}{% endif %}</li>
+                                                                                                        <li style="margin: auto !important;">{{ v|title }}</li>
                                                                                                     {% endfor %}
                                                                                                 {% endif %}
                                                                                             {% endfor %}
@@ -374,11 +356,11 @@
                                                                                     <div class="attrs-values-list">
                                                                                         <ul>
                                                                                             {% for key, values in attr_values.items %}
-                                                                                                <li style="margin: auto !important;"
+                                                                                                <li style="margin: auto !important; display: inline-block !important;"
                                                                                                     class="font-weight-bold">{{ key|title }}:
                                                                                                 </li>
                                                                                                 {% for v in values %}
-                                                                                                    <li style="margin: auto !important;"
+                                                                                                    <li style="margin: auto !important; display: inline-block !important;"
                                                                                                         class="flags-icon">
                                                                                                         {% if key == 'size' or key == 'language' %}
                                                                                                             {{ v|upper }}{% else %}
@@ -402,7 +384,7 @@
                                                                                                                      alt="">
                                                                                                             {% endif %}
                                                                                                         {% endif %}</li>
-                                                                                                    <br>
+
                                                                                                 {% endfor %}
                                                                                             {% endfor %}
                                                                                         </ul>
@@ -428,33 +410,7 @@
                                             <div class="heading float-left"><h2>Categories</h2></div>
 
                                         </div>
-                                        <div class="col-lg-3">
-                                            <div class="sidebar">
-                                                <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <div class="month">
-                                                            <ul>
-                                                                {% for cat_parent, cat_children in all_categories.items %}
-                                                                    <li>
-                                                                        <a href="{% url 'products-by-category' cat_parent.slug %}"
-                                                                           style="font-weight: bold !important; font-size: 20px !important;">
-                                                                            {{ cat_parent }}</a>
-                                                                    </li>
-                                                                    {% for child in cat_children %}
-                                                                        <li>
-                                                                            <a href="{% url 'products-by-category' child.slug %}"
-                                                                               style="font-size: 16px !important; text-indent: 20px !important; ">
-                                                                                > {{ child }}</a>
-                                                                        </li>
-                                                                    {% endfor %}
-                                                                    <br>
-                                                                {% endfor %}
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        {% include 'includes/categories_sidebar.html' %}
                                         <div class="col-lg-9">
                                             <div class="row">
                                                 <div class="col-lg-12">
@@ -477,11 +433,9 @@
                                                                                 <div class="product-description">
                                                                                     <p>{{ product_inventory.product.description }}</p>
                                                                                 </div>
-                                                                                {% if image %}
-                                                                                    <img class="product-img"
-                                                                                         src="{{ image.image.url }}"
-                                                                                         alt="{{ image.alt_text }}">
-                                                                                {% endif %}
+                                                                                <img class="product-img"
+                                                                                     src="{{ image.image.url }}"
+                                                                                     alt="{{ image.alt_text }}">
                                                                             </div>
                                                                             {% if product_inventory.is_on_sale %}
                                                                                 <h6 style="font-weight: bold; color: green; padding-top: 10px;"><span
@@ -524,11 +478,17 @@
                                                                                                 class="font-weight-bold">{{ key|title }}:
                                                                                             </li>
                                                                                             {% for v in values %}
-                                                                                                <li style="margin: auto !important;"
+                                                                                                <li style="margin: auto !important; display: inline-block !important;"
                                                                                                     class="flags-icon">
                                                                                                     {% if key == 'size' or key == 'language' %}
                                                                                                         {{ v|upper }}{% else %}
-                                                                                                        {{ v|title }}{% endif %}
+                                                                                                        {{ v|title }}
+                                                                                                        &nbsp
+                                                                                                        {% if v == 'asia' %}
+                                                                                                            &nbsp&nbsp&nbsp&nbsp
+                                                                                                        {% elif v == 'africa' %}
+                                                                                                            &nbsp&nbsp
+                                                                                                        {% endif %}{% endif %}
                                                                                                     {% if key == 'language' %}
                                                                                                         {% if v == 'pl' %}
                                                                                                             <img src="{% static 'images/flags/pl.svg' %}"
@@ -547,7 +507,8 @@
                                                                                                             <img src="{% static 'images/flags/it.svg' %}"
                                                                                                                  alt="">
                                                                                                         {% endif %}
-                                                                                                    {% endif %}</li><br>
+                                                                                                        <br>
+                                                                                                    {% endif %}</li>
                                                                                             {% endfor %}
                                                                                         {% endfor %}
                                                                                     </ul>

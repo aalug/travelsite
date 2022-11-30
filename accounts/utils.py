@@ -1,4 +1,3 @@
-from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -32,6 +31,7 @@ def send_verification_email(request, user, mail_subject, email_template):
     })
     to_email = user.email
     mail = EmailMessage(mail_subject, message, from_email, to=[to_email])
+    mail.content_subtype = 'html'
     mail.send()
 
 
@@ -41,6 +41,7 @@ def send_confirmation_email(to_email, mail_subject, email_template):
     from_email = settings.DEFAULT_FROM_EMAIL
     message = render_to_string(email_template)
     mail = EmailMessage(mail_subject, message, from_email, to=[to_email])
+    mail.content_subtype = 'html'
     mail.send()
 
 
@@ -54,4 +55,5 @@ def send_newsletter(title, content, email_template):
         'content': content
     })
     mail = EmailMessage(title, message, from_email, to=to_emails)
+    mail.content_subtype = 'html'
     mail.send()

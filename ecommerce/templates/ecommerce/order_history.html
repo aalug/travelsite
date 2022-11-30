@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Order History{% endblock %}
+
+{% block content %}
+    <div class="container" style="margin: 100px auto 150px auto;">
+        <div class="row">
+            <div class="col-lg-10" style="margin-right: auto; margin-left: auto;">
+                <h4>Your history of orders</h4>
+                <ul>
+                    {% for order in orders %}
+                        <li>
+                            <a href="{% url 'detail-order-history' order.order.order_number %}" class="placed-order-link">
+                                <div class="placed-order">
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td><h6>Order number: {{ order.order.order_number }}</h6></td>
+                                            <td>
+                                                <h6>Products:</h6>
+                                                {% for item in order.order_data %}
+                                                    <p>{{ item.product }}</p>
+                                                {% endfor %}
+                                            </td>
+                                            <td><h5>TOTAL: {{ order.order.total_amount }} €</h5></td>
+                                            <td><h6 class="placed-date">{{ order.order.order_date }}</h6>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
