@@ -112,7 +112,7 @@ class DashboardView(LoginRequiredMixin, View):
             profile.info_font_color = font_color
             profile_form.save()
             messages.success(request, 'Settings updated.')
-            return redirect('dashboard')
+        return redirect('dashboard')
 
 
 class ActivateView(View):
