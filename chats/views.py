@@ -82,11 +82,11 @@ class UserMessagesView(LoginRequiredMixin, ListView):
             chat_rooms = ChatRoom.objects.filter(
                 Q(name__startswith=f'{self.request.user.username}__') |
                 Q(name__endswith=f'__{self.request.user.username}') |
-                Q(name__endswith='__support'))
+                Q(name__endswith='__support')).order_by('-date_created')
         else:
             chat_rooms = ChatRoom.objects.filter(
                 Q(name__startswith=f'{self.request.user.username}__') |
-                Q(name__endswith=f'__{self.request.user.username}'))
+                Q(name__endswith=f'__{self.request.user.username}')).order_by('-date_created')
         return chat_rooms
 
     def get_context_data(self, **kwargs):

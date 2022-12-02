@@ -80,6 +80,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'ecommerce.context_processors.get_cart_quantity',
+                'accounts.context_processors.get_google_api',
             ],
         },
     },
@@ -183,3 +184,5 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 30
 }
+
+GOOGLE_API_KEY = config('GOOGLE_API_KEY')

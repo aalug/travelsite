@@ -1,6 +1,7 @@
 """Views for ecommerce app."""
 
 import json
+import random
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -9,7 +10,7 @@ from elasticsearch_dsl import Q
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from django.views import View
-from django.views.generic import ListView, TemplateView, RedirectView, DetailView, FormView
+from django.views.generic import ListView, TemplateView, RedirectView, FormView
 
 from accounts.models import UserProfile
 from .forms import OrderForm
@@ -32,41 +33,27 @@ class MainShopPageView(TemplateView):
            of each of them and returns list which contains
            3 tuples - every one contains data for each of
            3 chosen categories."""
-        import random
         categories = Category.objects.filter(is_active=True)
-        random_categories = []
-        while len(random_categories) < 3:
-            rand_cat = random.choice(categories)
-            if rand_cat not in random_categories:
-                random_categories.append(rand_cat)
+        random_categories = categories.order_by('?')[:3]
 
-        all_products = []
-        for category in random_categories:
-            products = Product.objects.filter(category=category, is_active=True)[:3]
+        category1_items = []
+        category2_items = []
+        category3_items = []
+        category_items = (category1_items, category2_items, category3_items)
+
+        for i, category in enumerate(random_categories):
+            all_products = Product.objects.filter(category=category, is_active=True)
+            products = all_products.order_by('?')[:3]
 
             for product in products:
                 product_inventory = ProductInventory.objects.filter(product=product)[0]
                 image = Media.objects.filter(product_inventory=product_inventory, is_feature=True)
                 if image:
                     image = image[0]
-                units = get_object_or_404(Stock, product_inventory=product_inventory)
+                units = get_object_or_404(Stock, product_inventory=product_inventory).units
                 attribute_values = get_all_products_attribute_values(product_inventory)
 
-                # This works because on this website won't be many products, so it can still be efficient
-                all_products.append((category, product_inventory, image, units, attribute_values))
-
-        category1_items = []
-        category2_items = []
-        category3_items = []
-
-        # sorting data and adding to appropriate list (by category)
-        for item in all_products:
-            if item[0] == random_categories[0]:
-                category1_items.append(item)
-            elif item[0] == random_categories[1]:
-                category2_items.append(item)
-            else:
-                category3_items.append(item)
+                category_items[i].append((category, product_inventory, image, units, attribute_values))
 
         return [
             category1_items,
@@ -80,24 +67,19 @@ class MainShopPageView(TemplateView):
         product_inventories = ProductInventory.objects.filter(is_on_sale=True, is_active=True)
         products_data = []
         for product_inv in product_inventories:
-            category = product_inv.product.category
             image = Media.objects.filter(product_inventory=product_inv, is_feature=True)
             if image:
                 image = image[0]
-            units = get_object_or_404(Stock, product_inventory=product_inv)
+            units = get_object_or_404(Stock, product_inventory=product_inv).units
             attribute_values = get_all_products_attribute_values(product_inv)
-            data = (category, product_inv, image, units, attribute_values)
+            data = (product_inv, image, units, attribute_values)
             products_data.append(data)
 
         return products_data
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        while True:
-            data = self.get_products_data()
-            if len(data[0]) > 0 and len(data[1]) > 0 and len(data[2]) > 0:
-                break
-
+        data = self.get_products_data()
         context['on_sale'] = self.get_products_on_sale()
         context['all_categories'] = get_categories_with_parents_and_children()
         context['category1_items'] = data[0]
@@ -162,6 +144,26 @@ class ProductDetailView(TemplateView):
 
         return products_data
 
+    def get_three_products(self):
+        """Return three ProductInventory objects to display
+           in 'You might also like' section of the page."""
+        slug = self.kwargs.get('slug')
+        product = get_object_or_404(Product, slug=slug)
+        category = product.category.all().order_by('?')[0]
+        products = Product.objects.filter(category=category)
+        three_products = products.order_by('?')[:3]
+        products_data = []
+        for product in three_products:
+            product_inventory = ProductInventory.objects.filter(product=product)[0]
+            image = Media.objects.filter(product_inventory=product_inventory, is_feature=True)
+            if image:
+                image = image[0]
+            attribute_values = get_all_products_attribute_values(product_inventory)
+            units = get_object_or_404(Stock, product_inventory=product_inventory).units
+            data = (product, image, units, attribute_values)
+            products_data.append(data)
+        return products_data
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         slug = self.kwargs.get('slug')
@@ -174,7 +176,7 @@ class ProductDetailView(TemplateView):
         context['products_data'] = products_data
         context['images'] = images
         context['product'] = get_object_or_404(Product, slug=slug)
-
+        context['three_products'] = self.get_three_products()
         return context
 
 
@@ -287,6 +289,9 @@ class AddToCartView(LoginRequiredMixin, RedirectView):
             # if there is OrderItem, that means that user is adding the same
             # item to the cart for the second, third... time
             order_item = OrderItem.objects.get(cart=cart, product_inventory=product_inventory)
+            order_item.quantity += 1
+            order_item.amount += order_item.price
+            order_item.save()
         except OrderItem.DoesNotExist:
             if product_inventory.is_on_sale:
                 price = product_inventory.sale_price
@@ -301,14 +306,10 @@ class AddToCartView(LoginRequiredMixin, RedirectView):
                 amount=price  # quantity is 1, so the price = amount
             )
             order_item.save()
-        else:
-            order_item.quantity += 1
-            order_item.amount += order_item.price
-            order_item.save()
-        finally:
-            cart.total_amount += order_item.price
-            cart.quantity += 1
-            cart.save()
+
+        cart.total_amount += order_item.price
+        cart.quantity += 1
+        cart.save()
 
     @staticmethod
     def if_cart_created(product_inventory, user, cart):

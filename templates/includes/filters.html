@@ -5,14 +5,14 @@
         <ul>
             {% for v in value %}
                 <li>
-                    <input type="{% if key == 'color' %}radio{% else %}checkbox{% endif %}"
+                    <input type="radio"
                            value="{{ v }}"
                            onchange="handleChangeAndCookie(this);"
                            id="id-value-{{ v }}" name="{{ key }}"
                            class="filter-checkbox">
                     <label class="checkbox-filter-label"
-                           for="id-value-{{ v }}">{% if key == 'size' or key == 'language' %}{{ v|upper }}{% else %}
-                        {{ v|title }}{% endif %}</label>
+                           for="id-value-{{ v }}">
+                        {{ v|upper }}</label>
                 </li>
             {% endfor %}
         </ul>

@@ -71,7 +71,8 @@
                                                                                 </div>
                                                                                 {# ======================= PRICE ==============#}
                                                                                 {% if product_inventory.is_on_sale %}
-                                                                                    <h6 style="font-weight: bold; color: green; padding-top: 10px;"><span style="color: grey; text-decoration: line-through; font-size: 16px; font-weight:normal; padding-top: 10px;">
+                                                                                    <h6 style="font-weight: bold; color: green; padding-top: 10px;"><span
+                                                                                            style="color: grey; text-decoration: line-through; font-size: 16px; font-weight:normal; padding-top: 10px;">
                                                                                         {{ product_inventory.store_price }} </span>{{ product_inventory.sale_price }}
                                                                                         €</h6>
                                                                                 {% else %}
@@ -79,65 +80,7 @@
                                                                                         €</h6>
                                                                                 {% endif %}
                                                                                 {# ========================== PRODUCT ATTRIBUTES ==================#}
-                                                                                {% if 'color' in attr_values %}
-                                                                                    <div class="attrs-values-list"
-                                                                                         style="width: 68% !important;">
-                                                                                        <ul>
-                                                                                            {% for key, values in attr_values.items %}
-                                                                                                {% if key != 'color' %}
-                                                                                                    <li style="margin: auto !important;"
-                                                                                                        class="font-weight-bold">{{ key|title }}:
-                                                                                                    </li>
-                                                                                                    {% for v in values %}
-                                                                                                        <li style="margin: auto !important;">{{ v|upper }}</li>
-                                                                                                    {% endfor %}
-                                                                                                {% endif %}
-                                                                                            {% endfor %}
-                                                                                            <div id="colors-list">
-                                                                                                {% for color in attr_values.color %}
-                                                                                                    <li style="margin: auto !important;"
-                                                                                                        class="color-box">
-                                                                                                        <div style="background-color: {{ color }}"></div>
-                                                                                                    </li>
-                                                                                                {% endfor %}
-                                                                                            </div>
-                                                                                        </ul>
-                                                                                    </div>
-                                                                                {% else %}
-                                                                                    <div class="attrs-values-list">
-                                                                                        <ul>
-                                                                                            {% for key, values in attr_values.items %}
-                                                                                                <li style="margin: auto !important;"
-                                                                                                    class="font-weight-bold">{{ key|title }}:
-                                                                                                </li>
-                                                                                                {% for v in values %}
-                                                                                                    <li style="margin: auto !important;"
-                                                                                                        class="flags-icon"> {% if key == 'size' or key == 'language' %}{{ v|upper}}{% else %}{{ v|title }}{% endif %}
-                                                                                                        {% if key == 'language' %}
-                                                                                                            {% if v == 'pl' %}
-                                                                                                                <img src="{% static 'images/flags/pl.svg' %}"
-                                                                                                                     alt=""
-                                                                                                                     style="border: solid 1px rgba(128,128,128,0.49);">
-                                                                                                            {% elif v == 'de' %}
-                                                                                                                <img src="{% static 'images/flags/de.svg' %}"
-                                                                                                                     alt="">
-                                                                                                            {% elif v == 'en' %}
-                                                                                                                <img src="{% static 'images/flags/en.svg' %}"
-                                                                                                                     alt="">
-                                                                                                            {% elif v == 'fr' %}
-                                                                                                                <img src="{% static 'images/flags/fr.svg' %}"
-                                                                                                                     alt="">
-                                                                                                            {% elif v == 'it' %}
-                                                                                                                <img src="{% static 'images/flags/it.svg' %}"
-                                                                                                                     alt="">
-                                                                                                            {% endif %}
-                                                                                                        {% endif %}</li>
-                                                                                                {% endfor %}
-                                                                                                <br>
-                                                                                            {% endfor %}
-                                                                                        </ul>
-                                                                                    </div>
-                                                                                {% endif %}
+                                                                                {% include 'includes/attribute_values_list.html' %}
                                                                             </div>
                                                                         </a>
                                                                     </div>
@@ -189,7 +132,9 @@
         }
 
         function deleteAllCookies() {
-         document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+            document.cookie.split(";").forEach(function (c) {
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            });
         }
 
         function eraseCookie(name) {

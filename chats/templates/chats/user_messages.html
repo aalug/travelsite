@@ -14,17 +14,18 @@
                     <tbody>
                     {% for room_name, name_and_msg in names_and_last_messages.items %}
                         {% for username, msg in name_and_msg.items %}
-                        <tr class="msg-links">
-                            <td><a href="{% url 'chat-room' room_name %}">{{ username }}</a></td>
-                            <td><a href="{% url 'chat-room' room_name %}">
-                                {% if request.user.username == msg.user %}
-                                    <span class="msg-author">You:</span> {{ msg }}
-                                {% else %}
-                                    <span class="msg-author">{{ username }}:</span> {{ msg }}
-                                {% endif %}
-                            </a></td>
-                            <td><a href="{% url 'chat-room' room_name %}">{{ msg.date_added|date:"H:i, d.m.y" }}</a></td>
-                        </tr>
+                            <tr class="msg-links">
+                                <td><a href="{% url 'chat-room' room_name %}">{{ username }}</a></td>
+                                <td><a href="{% url 'chat-room' room_name %}">
+                                    {% if request.user.username == msg.user %}
+                                        <span class="msg-author">You:</span> {{ msg }}
+                                    {% else %}
+                                        <span class="msg-author">{{ username }}:</span> {{ msg }}
+                                    {% endif %}
+                                </a></td>
+                                <td><a href="{% url 'chat-room' room_name %}">{{ msg.date_added|date:"H:i, d.m.y" }}</a>
+                                </td>
+                            </tr>
                         {% endfor %}
                     {% endfor %}
                     </tbody>

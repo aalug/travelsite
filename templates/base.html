@@ -74,6 +74,9 @@
 <!-- Global Init -->
 <script src="{% static 'js/custom.js' %}"></script>
 
+<!-- GOOGLE API location search -->
+<script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" async defer></script>
+
 {% block additional_js %}{% endblock %}
 
 </body>

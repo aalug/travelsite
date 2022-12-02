@@ -310,6 +310,9 @@ class OrderItem(models.Model):
     def __str__(self):
         return f'{self.product_inventory}'
 
+    class Meta:
+        unique_together = (('user', 'product_inventory'),)
+
 
 class Tax(models.Model):
     tax_type = models.CharField(max_length=20, unique=True)

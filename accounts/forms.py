@@ -30,6 +30,7 @@ class UserProfileForm(forms.ModelForm):
                                       validators=[allow_only_images_validator])
     cover_photo = forms.FileField(widget=forms.FileInput(attrs={'class': 'btn btn-info'}),
                                   validators=[allow_only_images_validator])
+    address = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Start typing...'}))
 
     class Meta:
         model = UserProfile
