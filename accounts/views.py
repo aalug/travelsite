@@ -8,7 +8,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
-from django.utils.http import urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_decode, url_has_allowed_host_and_scheme
 from django.views import View
 from django.views.generic import FormView, RedirectView, ListView
 
@@ -60,7 +60,7 @@ class MyAccountRedirectView(LoginRequiredMixin, RedirectView):
 
 
 class LoginView(View):
-    """View for users (can be user by staff also) to log in."""
+    """View for users to log in."""
 
     def get(self, request):
         if request.user.is_authenticated:
@@ -75,6 +75,9 @@ class LoginView(View):
 
         if user is not None:
             auth.login(request, user)
+            nxt = request.POST.get('next', None)
+            if nxt is not None:
+                return redirect(nxt)
             return redirect('my-account')
         else:
             messages.error(request, 'Invalid login credentials.')

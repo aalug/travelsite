@@ -30,22 +30,14 @@ def get_all_products_attribute_values(product_inventory):
     for prod_inv in all_products_inventories:
         values = ProductAttributeValues.objects.filter(productinventory=prod_inv).distinct()
         for v in values:
-            x = str(v).split(' : ')
-            attr_name = x[0]
-            attr_value = x[1]
+            attr_name, attr_value = str(v).split(' : ')[:2]
             if attr_name not in attribute_values:
-                attribute_values[attr_name] = [attr_value]
-            else:
-                val = attribute_values.get(attr_name)
-                if attr_value not in val:
-                    val.append(attr_value)
-                attribute_values[attr_name] = val
+                attribute_values[attr_name] = set([])
+            attribute_values[attr_name].add(attr_value)
 
     # sorting sizes
     if 'size' in attribute_values:
-        values = attribute_values.get('size')
-        values.sort(key=size_sorting_key)
-        attribute_values['size'] = values
+        attribute_values['size'] = sorted(attribute_values['size'], key=size_sorting_key)
 
     return attribute_values
 
