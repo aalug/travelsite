@@ -16,6 +16,7 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('chat/', include('chats.urls')),
     path('shop/', include('ecommerce.urls')),
+    path('forum/', include('forum.urls')),
 
     # API / Search
     path('api/inventory/category/all/', CategoryList.as_view()),

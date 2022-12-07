@@ -25,7 +25,8 @@
                         <li><a href="#">Blog</a></li>
                         <li><a href="{% url 'shop' %}"
                                class="{% if '/shop/' in request.path %}active{% endif %}">Shop</a></li>
-                        <li><a href="#">Forum</a></li>
+                        <li><a href="{% url 'forum' %}" class="{% if '/forum/' in request.path %}active{% endif %}">Forum</a>
+                        </li>
                         <li><a href="{% url 'user-messages' %}"
                                class="{% if '/chat/my-messages/' in request.path %}active{% endif %}"><i
                                 class="fa fa-envelope" aria-hidden="true"></i> Your messages</a></li>
@@ -44,14 +45,16 @@
                         {% if '/shop/' in request.path %}
                             <li></li>
                             <li></li>
-                             <li>
-                                <a class="{% if '/order-history/' in request.path or '/detail-order-history/' in request.path %}active{% endif %}" href="{% url 'order-history' %}">
-                                Order History</a>
+                            <li>
+                                <a class="{% if '/order-history/' in request.path or '/detail-order-history/' in request.path %}active{% endif %}"
+                                   href="{% url 'order-history' %}">
+                                    Order History</a>
                             </li>
                             <li>
                                 <a class="shopping-cart" href="{% url 'cart' %}">
                                     <div><i class="fa fa-shopping-cart" aria-hidden="true"></i>
-                                        <div class="cart-qty"><p>{{ cart_quantity }}</p></div></div>
+                                        <div class="cart-qty"><p>{{ cart_quantity }}</p></div>
+                                    </div>
                                 </a>
                             </li>
                         {% endif %}

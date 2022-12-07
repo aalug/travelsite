@@ -870,3 +870,57 @@ input[type="checkbox"], input[type="radio"]:not(.payment-method input[type="radi
 .main-page-products {
     height: 400px;
 }
+
+.new-posts {
+    margin: 100px auto 130px auto;
+}
+
+.mew-post {
+    width: 100%;
+    height: 120px;
+    outline: solid 1px #3e54e0;
+    border-radius: 3px;
+    margin: 10px auto;
+}
+
+.mew-post:hover {
+    outline: solid 3px #0b0b8f;
+    background-color: rgba(233, 233, 245, 0.56);
+}
+
+.mew-post:hover .post-tag {
+    background-color: white;
+}
+
+.mew-post:hover .post-date {
+    font-weight: 500;
+}
+
+.post-title {
+    position: relative;
+    top: 40px;
+    left: 20px;
+}
+
+.post-tag {
+    border: solid 1px rgba(223, 227, 255);
+    border-radius: 2px;
+    background-color: rgba(223, 227, 246, 0.79);
+    display: inline-block;
+    padding: 0 5px;
+}
+
+.mew-post li {
+    display: inline;
+}
+
+.post-details {
+    float: right;
+    position: relative;
+    right: 50px;
+    bottom: 18px;
+}
+
+.post-date {
+    margin-top: 35px;
+}

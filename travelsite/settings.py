@@ -52,7 +52,12 @@ INSTALLED_APPS = [
     'mptt',
     'django_elasticsearch_dsl',
     'rest_framework',
-    'search'
+    'search',
+
+    'forum',
+    'tinymce',
+    'hitcount',
+    'taggit',
 ]
 
 MIDDLEWARE = [
