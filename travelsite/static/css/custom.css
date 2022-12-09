@@ -902,6 +902,14 @@ input[type="checkbox"], input[type="radio"]:not(.payment-method input[type="radi
     left: 20px;
 }
 
+.post-title span {
+    font-size: 15px;
+}
+
+.post-title li {
+    display: inline;
+}
+
 .post-tag {
     border: solid 1px rgba(223, 227, 255);
     border-radius: 2px;
@@ -914,13 +922,140 @@ input[type="checkbox"], input[type="radio"]:not(.payment-method input[type="radi
     display: inline;
 }
 
-.post-details {
+.post-details, .post-details-np {
     float: right;
     position: relative;
-    right: 50px;
-    bottom: 18px;
+    right: 90px;
+    bottom: 130px;
+}
+
+.post-details-np {
+    right: 140px;
+}
+
+.post-author {
+    height: 90px;
+}
+
+.post-author-np {
+    position: relative;
+    left: 50px;
+}
+
+.post-author img {
+    height: 65px;
+    width: 65px;
+}
+
+.post-details:hover .post-author {
+    color: #3838ee;
+}
+
+.post-author img:hover {
+    transform: scale(1.1, 1.1);
+}
+
+
+.post-date, .post-date-np {
+    position: relative;
+    bottom: 40px;
 }
 
 .post-date {
-    margin-top: 35px;
+    left: 50px;
+}
+
+.post-date-np {
+    left: 40px;
+}
+
+
+.post-categories {
+    border: solid 1px #080862;
+    border-radius: 3px;
+    background-color: rgba(234, 234, 238, 0.41);
+    padding: 15px;
+}
+
+.post-categories a {
+    color: #0a0a57;
+}
+
+.post-categories a:hover {
+    color: #5b5bc2;
+}
+
+.last-posts {
+    width: 100%;
+    height: 120px;
+    border-radius: 3px;
+    margin: 10px auto;
+}
+
+.last-posts:hover .post-tag {
+    background-color: white;
+}
+
+.last-posts-blue {
+    background-color: rgba(235, 235, 248, 0.52);
+}
+
+.last-posts-white {
+    background-color: white;
+}
+
+.last-posts-white, .last-posts-blue {
+    outline: solid 1px #3e54e0;
+    border-radius: 3px;
+}
+
+.last-posts-blue:hover, .last-posts-white:hover {
+    outline: solid 3px #0b0b8f;
+}
+
+.category-link {
+    position: relative;
+    left: 50px;
+    top: 12px;
+    color: #0d0648;
+}
+
+.category-link:hover {
+    text-decoration: underline !important;
+    color: #331e6e;
+}
+
+.author-points, .author-points-np {
+    color: #413e3e;
+    font-size: 28px;
+    float: right;
+    position: relative;
+    left: 60px;
+    bottom: 160px;
+}
+
+.points-thumbs {
+    display: grid;
+}
+
+.author-points span, .author-points-np span {
+    position: relative;
+    right: 30px;
+    top: 70px;
+}
+
+.t-up {
+    color: #24bb24;
+}
+
+.t-down {
+    color: #ab2b2b;
+}
+
+.t-down:hover {
+    transform: scale(1.4, 1.4);
+}
+
+.t-up:hover {
+    transform: scale(1.4, 1.4);
 }
