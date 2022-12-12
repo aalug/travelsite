@@ -33,11 +33,11 @@ class Author(models.Model):
 
 class PostCategory(MPTTModel):
     """Category table implemented with MPTT."""
-    name = models.CharField(max_length=100,
+    name = models.CharField(max_length=100, unique=True,
                             verbose_name=_('category name'),
                             help_text=_('format: required, max=100'))
 
-    slug = models.SlugField(max_length=150, null=True,
+    slug = models.SlugField(max_length=150, null=True, unique=True,
                             verbose_name=_('category safe URL'),
                             help_text=_('format: letters, numbers, underscores or hyphens'))
     description = models.TextField(default='description', null=True)
@@ -95,8 +95,8 @@ class Comment(models.Model):
     """Comment table."""
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
     replies = models.ManyToManyField(Reply, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.content[:100]
@@ -104,7 +104,7 @@ class Comment(models.Model):
 
 class Post(models.Model):
     """Post table."""
-    title = models.CharField(max_length=400)
+    title = models.CharField(max_length=400, unique=True)
     slug = models.SlugField(max_length=430, unique=True, null=True, blank=True)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     content = HTMLField()
