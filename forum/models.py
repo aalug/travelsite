@@ -48,6 +48,7 @@ class PostCategory(MPTTModel):
                             blank=True,
                             verbose_name='parent of category',
                             help_text=_('format: not required'))
+    cover_photo = models.ImageField(null=True)
 
     class MPTTMeta:
         order_insertion_by = ['name']

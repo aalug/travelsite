@@ -875,24 +875,24 @@ input[type="checkbox"], input[type="radio"]:not(.payment-method input[type="radi
     margin: 100px auto 130px auto;
 }
 
-.mew-post {
+.new-post {
     width: 100%;
     height: 120px;
     outline: solid 1px #3e54e0;
     border-radius: 3px;
     margin: 10px auto;
+    transition: background-color 300ms ease-out 10ms;
 }
 
-.mew-post:hover {
-    outline: solid 3px #0b0b8f;
+.new-post:hover {
     background-color: rgba(233, 233, 245, 0.56);
 }
 
-.mew-post:hover .post-tag {
+.new-post:hover .post-tag {
     background-color: white;
 }
 
-.mew-post:hover .post-date {
+.new-post:hover .post-date {
     font-weight: 500;
 }
 
@@ -1009,10 +1009,6 @@ input[type="checkbox"], input[type="radio"]:not(.payment-method input[type="radi
     border-radius: 3px;
 }
 
-.last-posts-blue:hover, .last-posts-white:hover {
-    outline: solid 3px #0b0b8f;
-}
-
 .category-link {
     position: relative;
     left: 50px;
@@ -1058,4 +1054,8 @@ input[type="checkbox"], input[type="radio"]:not(.payment-method input[type="radi
 
 .t-up:hover {
     transform: scale(1.4, 1.4);
+}
+
+.pagination {
+    width: 350px;
 }

@@ -12,7 +12,7 @@
                             </li>
                             {% for child in cat_children %}
                                 <li>
-                                    <a href="{% url 'products-by-category' child.slug %}"
+                                    <a href="{% url 'posts-by-category' child.slug %}"
                                        style="font-size: 16px !important; text-indent: 20px !important; ">
                                         > {{ child|title }} ({{ child.num_posts }} posts)</a>
                                 </li>

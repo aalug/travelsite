@@ -1,27 +1,16 @@
+"""Views for the forum app."""
+
 from django.shortcuts import get_object_or_404
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import ListView, TemplateView
 
 from accounts.models import UserProfile
-from forum.models import Post, PostCategory, Author
-from forum.utils import get_post_categories_with_parents_and_children
+from forum.models import Post, PostCategory
+from forum.utils import get_post_categories_with_parents_and_children, get_posts_data
 
 
 class MainForumPageView(TemplateView):
     """Main forum page view."""
     template_name = 'forum/forum_main_page.html'
-
-    @staticmethod
-    def get_posts_data():
-        """Returns 3 newest posts with UserProfile of an author."""
-        posts = Post.objects.filter(is_approved=True, closed=False).order_by('-created_at')[:3]
-        posts_data = []
-        for post in posts:
-            user_profile = get_object_or_404(UserProfile, user=post.author.user)
-
-            posts_data.append(
-                (post, user_profile)
-            )
-        return posts_data
 
     @staticmethod
     def get_categories_with_last_posts():
@@ -39,7 +28,7 @@ class MainForumPageView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['posts_data'] = self.get_posts_data()
+        context['posts_data'] = get_posts_data(number_of_posts=3)
         context['categories'] = get_post_categories_with_parents_and_children()
         context['categories_w_last_posts'] = self.get_categories_with_last_posts()
         return context
@@ -48,11 +37,17 @@ class MainForumPageView(TemplateView):
 class PostsByCategoryView(ListView):
     """View for posts by category page."""
     template_name = 'forum/posts_by_category.html'
+    context_object_name = 'posts_data'
+    paginate_by = 10
 
     def get_queryset(self):
-        category = get_object_or_404(PostCategory, slug=self.kwargs.get('slug'))
-        posts = Post.objects.filter(categories=category)
-        return posts
+        return get_posts_data(category_slug=self.kwargs.get('slug'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['categories'] = get_post_categories_with_parents_and_children()
+        context['current_category'] = get_object_or_404(PostCategory, slug=self.kwargs.get('slug'))
+        return context
 
 
 class PostDetailView(TemplateView):
