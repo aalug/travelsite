@@ -23,7 +23,7 @@ class Author(models.Model):
 
     @property
     def num_posts(self):
-        return Post.objects.filter(author=self).count()
+        return Post.objects.filter(author=self, is_approved=True).count()
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -48,7 +48,7 @@ class PostCategory(MPTTModel):
                             blank=True,
                             verbose_name='parent of category',
                             help_text=_('format: not required'))
-    cover_photo = models.ImageField(null=True)
+    cover_photo = models.ImageField(upload_to='post_categories/cover_photos', blank=True, null=True)
 
     class MPTTMeta:
         order_insertion_by = ['name']
@@ -72,7 +72,7 @@ class PostCategory(MPTTModel):
 
     @property
     def num_posts(self):
-        return Post.objects.filter(categories=self).count()
+        return Post.objects.filter(categories=self, is_approved=True).count()
 
     @property
     def last_post(self):
@@ -90,6 +90,7 @@ class Reply(models.Model):
 
     class Meta:
         verbose_name_plural = _('replies')
+        ordering = ('created_at',)
 
 
 class Comment(models.Model):
@@ -102,6 +103,9 @@ class Comment(models.Model):
     def __str__(self):
         return self.content[:100]
 
+    class Meta:
+        ordering = ('-created_at',)
+
 
 class Post(models.Model):
     """Post table."""
@@ -109,14 +113,15 @@ class Post(models.Model):
     slug = models.SlugField(max_length=430, unique=True, null=True, blank=True)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     content = HTMLField()
+    cover_photo = models.ImageField(upload_to='posts/cover_photos', blank=True, null=True)
     categories = models.ManyToManyField(PostCategory, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    comments = models.ManyToManyField(Comment, blank=True)
     is_approved = models.BooleanField(default=False)
     hit_count_generic = GenericRelation(HitCount, object_id_field='object_pk',
                                         related_query_name='hit_count_generic_relation')
     tags = TaggableManager()
-    comments = models.ManyToManyField(Comment, blank=True)
     closed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:

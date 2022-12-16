@@ -6,16 +6,9 @@
             <div class="col-12">
                 <nav class="main-nav">
                     <!-- ***** Logo Start ***** -->
-                    <a href="{% url 'home' %}" class="logo-home"><img class="logo-home"
-                                                                      src="{% static 'images/logo.png' %}" alt=""></a>
+                    <a href="{% url 'home' %}" class="logo-home"><img class="logo-home" src="{% static 'images/logo.png' %}" alt=""></a>
                     <!-- ***** Logo End ***** -->
-                    <!-- ***** Shopping cart start (if in ecommerce app) -->
-                    {#                    {% if '/shop/' in request.path %}#}
-                    {#                        <a class="shopping-cart" href="{% url 'cart' %}">#}
-                    {#                        <div><i class="fa fa-shopping-cart" aria-hidden="true"></i><p class="cart-qty">{{ cart_quantity }}</p></div>#}
-                    {#                        </a>#}
-                    {#                    {% endif %}#}
-                    <!-- ***** Shopping cart start -->
+
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
                         <li><a href="{% url 'home' %}" class="{% if '/' == request.path %}active{% endif %}">Home</a>
@@ -28,7 +21,7 @@
                         <li><a href="{% url 'forum' %}" class="{% if '/forum/' in request.path %}active{% endif %}">Forum</a>
                         </li>
                         <li><a href="{% url 'user-messages' %}"
-                               class="{% if '/chat/my-messages/' in request.path %}active{% endif %}"><i
+                               class="{% if '/chat/' in request.path %}active{% endif %}"><i
                                 class="fa fa-envelope" aria-hidden="true"></i> Your messages</a></li>
                     </ul>
 
@@ -48,7 +41,7 @@
                             <li>
                                 <a class="{% if '/order-history/' in request.path or '/detail-order-history/' in request.path %}active{% endif %}"
                                    href="{% url 'order-history' %}">
-                                    Order History</a>
+                                    My Orders</a>
                             </li>
                             <li>
                                 <a class="shopping-cart" href="{% url 'cart' %}">

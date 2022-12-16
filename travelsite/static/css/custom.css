@@ -902,6 +902,14 @@ input[type="checkbox"], input[type="radio"]:not(.payment-method input[type="radi
     left: 20px;
 }
 
+.post-title h4 {
+    width: 420px;
+    height: 25px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .post-title span {
     font-size: 15px;
 }
@@ -1022,7 +1030,6 @@ input[type="checkbox"], input[type="radio"]:not(.payment-method input[type="radi
 }
 
 .author-points, .author-points-np {
-    color: #413e3e;
     font-size: 28px;
     float: right;
     position: relative;
@@ -1030,16 +1037,44 @@ input[type="checkbox"], input[type="radio"]:not(.payment-method input[type="radi
     bottom: 160px;
 }
 
-.points-thumbs {
+.author-points-details {
+    font-size: 28px;
+    float: right;
+    position: relative;
+    left: 240px;
+    bottom: 20px;
+}
+
+.details-points {
+    background-color: white;
+    position: relative;
+    left: 10px;
+    top: 5px;
+    border-radius: 8px;
+    -moz-box-shadow: 0 0 6px #ccc;
+    -webkit-box-shadow: 0 0 6px #ccc;
+    box-shadow: 0 0 6px #ccc;
+}
+
+.points-thumbs, .points-thumbs-details {
     display: grid;
 }
 
-.author-points span, .author-points-np span {
+.author-points-details span {
+    position: relative;
+    color: black !important;
+    right: 38px;
+    top: 62px;
+}
+
+.author-points span,
+.author-points-np span {
     position: relative;
     right: 30px;
     top: 70px;
 }
 
+.author-points-details span,
 .t-up {
     color: #24bb24;
 }
@@ -1058,4 +1093,271 @@ input[type="checkbox"], input[type="radio"]:not(.payment-method input[type="radi
 
 .pagination {
     width: 350px;
+    -moz-box-shadow: 0 0 6px #ccc;
+    -webkit-box-shadow: 0 0 6px #ccc;
+    box-shadow: 0 0 6px #ccc;
+}
+
+.post-author-info img {
+    width: 120px;
+    height: 120px;
+    border-radius: 5px;
+    margin-top: 5px;
+    -moz-box-shadow: 0 0 6px #ccc;
+    -webkit-box-shadow: 0 0 6px #ccc;
+    box-shadow: 0 0 6px #ccc;
+}
+
+.post-author-info h5,
+.post-details-info h3,
+.post-details-info div {
+    color: black;
+    background-color: white;
+    border-radius: 7px;
+    -moz-box-shadow: 0 0 6px #ccc;
+    -webkit-box-shadow: 0 0 6px #ccc;
+    box-shadow: 0 0 6px #ccc;
+}
+
+.post-details-info div {
+    width: 210px;
+    float: right;
+}
+
+.post-details-info h3 {
+    margin-bottom: 10px;
+}
+
+.select {
+    border: solid 2px #2d2de7;
+    padding: 5px;
+    outline: none;
+    border-radius: 5px;
+}
+
+.select option {
+    background-color: #eae5e5;
+}
+
+.active-category {
+    text-decoration: underline !important;
+    color: #5b5bc2 !important;
+    text-align: center;
+}
+
+.chat-with-author a {
+    color: #030377;
+}
+
+.chat-comment-author {
+    transform: rotate(90deg);
+}
+
+.chat-with-author a:hover {
+    color: rgba(3, 3, 119, 0.69);
+}
+
+
+.post-content {
+    margin: 100px auto;
+    border-radius: 7px;
+    -moz-box-shadow: 0 0 5px #ccc;
+    -webkit-box-shadow: 0 0 5px #ccc;
+    box-shadow: 0 0 5px #ccc;
+    background-color: rgba(249, 249, 249, 0.98);
+    padding: 50px 30px;
+}
+
+.comment-form button {
+    width: 100px;
+    height: 40px;
+    border-radius: 5px;
+    background-color: rgba(3, 3, 93, 0.69);
+    color: white;
+    outline: none;
+    border: none;
+    position: relative;
+    top: 100px;
+    right: 110px;
+    transition: background-color 300ms ease-out 10ms, color 300ms ease-out 10ms;
+}
+
+.comment-form button:hover {
+    background-color: white;
+    color: rgba(3, 3, 93, 0.69);
+    border: solid 2px rgba(3, 3, 93, 0.69);
+}
+
+.comment-form textarea {
+    width: 500px;
+    height: 160px;
+}
+
+.comment-form hr {
+    border-top: 2px solid rgba(3, 3, 93, 0.69);
+}
+
+.comment-form-inner {
+    position: relative;
+    left: 600px;
+}
+
+.comment-profile img {
+    height: 60px;
+    width: 60px;
+    border-radius: 5%;
+}
+
+.comment-author-points {
+    margin-top: 5px;
+    font-size: 20px;
+}
+
+.comment-container {
+    border-radius: 8px;
+    -moz-box-shadow: 0 0 6px #ccc;
+    -webkit-box-shadow: 0 0 6px #ccc;
+    box-shadow: 0 0 6px #ccc;
+    margin-top: 14px;
+    background-color: #f9f9f9;
+    width: 1100px;
+}
+
+.comment-section {
+    margin-bottom: 180px;
+}
+
+/* pop up reply */
+.openBtn {
+    display: flex;
+    justify-content: left;
+}
+
+.openButton {
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    background-color: rgba(63, 63, 192, 0.94);
+    color: white;
+    padding: 3px 9px;
+    width: 90px;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 45px
+}
+
+.openButton:hover {
+    background-color: rgba(63, 63, 192, 0.58);
+}
+
+#replyText {
+    width: 280px;
+    margin: auto;
+    height: 130px;
+}
+
+.replyPopup {
+    position: relative;
+    text-align: center;
+    width: 100%;
+}
+
+.formPopup {
+    display: none;
+    position: fixed;
+    left: 80%;
+    top: 20%;
+    transform: translate(-50%, 5%);
+    border-radius: 5px;
+    -moz-box-shadow: 0 0 6px #ccc;
+    -webkit-box-shadow: 0 0 6px #ccc;
+    box-shadow: 0 0 6px #ccc;
+    z-index: 9;
+}
+
+.formContainer {
+    width: 300px;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.btn-send {
+    width: 65% !important;
+}
+
+.cancel {
+    width: 30% !important;
+}
+
+.formContainer .btn {
+    padding: 12px 20px;
+    border: none;
+    background-color: #8ebf42;
+    color: #050505;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 10px;
+    opacity: 0.8;
+}
+
+.formContainer .cancel {
+    background-color: #cc0000;
+}
+
+.formContainer .btn:hover,
+.openButton:hover {
+    opacity: 1;
+}
+
+.reply-container {
+    width: 85%;
+    position: relative;
+    left: 15%;
+}
+
+.showHideBtn {
+    outline: none;
+    border: solid 1px #9f9f9f;
+    border-radius: 6px;
+    background-color: rgba(226, 226, 229, 0.94);
+    color: black;
+    padding: 3px 9px;
+    cursor: pointer;
+    font-size: 11px;
+    width: 110px;
+    position: absolute;
+    right: 30px;
+    bottom: 0;
+}
+
+.showHideBtn:hover {
+    background-color: rgb(255, 255, 255);
+}
+
+.reply-date, .comment-date {
+    font-size: 10px;
+    text-align: center;
+}
+
+.reply-date div, .comment-date div {
+    width: 80px;
+    transform: rotate(90deg);
+    position: absolute;
+}
+
+.reply-date div {
+    toP: 45px;
+    left: 20px;
+}
+
+.comment-date div {
+    top: 45px;
+    left: 35px;
+}
+
+.comment-content-div {
+    position: relative;
+    right: 50px;
+    overflow-y: auto;
 }

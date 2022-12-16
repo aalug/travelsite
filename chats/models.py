@@ -22,8 +22,8 @@ class Message(models.Model):
     date_added = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
-        if len(self.content) > 20:
-            return f'{self.content[:20]}...'
+        if len(self.content) > 10:
+            return f'{self.content[:10]}...'
         else:
             return f'{self.content}'
 

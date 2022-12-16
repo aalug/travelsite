@@ -7,13 +7,15 @@
                         {% for cat_parent, cat_children in categories.items %}
                             <li>
                                 <a href="{% url 'posts-by-category' cat_parent.slug %}"
-                                   style="font-weight: bold !important; font-size: 20px !important;">
+                                   style="font-weight: bold !important; font-size: 20px !important;"
+                                   class="{% if cat_parent.slug in request.path %}active-category{% endif %}">
                                     {{ cat_parent|title }} ({{ cat_parent.num_posts }} posts)</a>
                             </li>
                             {% for child in cat_children %}
                                 <li>
                                     <a href="{% url 'posts-by-category' child.slug %}"
-                                       style="font-size: 16px !important; text-indent: 20px !important; ">
+                                       style="font-size: 16px !important; text-indent: 20px !important; "
+                                       class="{% if child.slug in request.path %}active-category{% endif %}">
                                         > {{ child|title }} ({{ child.num_posts }} posts)</a>
                                 </li>
                             {% endfor %}

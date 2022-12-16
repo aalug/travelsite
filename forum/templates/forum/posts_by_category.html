@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Posts by Category{% endblock %}
+{% block title %}{{ current_category }}{% endblock %}
 
 {% block content %}
     <div class="page-heading-shows-events"
@@ -26,6 +26,17 @@
         <div class="row">
             {% include 'includes/post_categories_sidebar.html' %}
             <div class="col-lg-8">
+                <div>
+                    <form id="sort-posts" method="GET" action="{% url 'posts-by-category' current_category.slug %}">
+                        <label for="sort">Sort posts by:</label>
+                        <select id="sort" name="sort-by" class="select">
+                            <option disabled selected value> -- Select an option --</option>
+                            <option value="date-desc">Date (Descending)</option>
+                            <option value="date-asc">Date (Ascending)</option>
+                            <option value="popularity">Popularity</option>
+                        </select>
+                    </form>
+                </div>
                 <ul>
                     {% for post, user_profile in posts_data %}
                         <li>
@@ -84,4 +95,34 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block additional_js %}
+    <script>
+
+        window.onbeforeunload = function (e) {
+            localStorage.setItem('scrollPos', window.scrollY);
+        };
+
+        document.getElementById('sort').onchange = function () {
+            document.getElementById('sort-posts').submit();
+        };
+
+        document.addEventListener('DOMContentLoaded', function (e) {
+            // save the scroll position on page
+            let scrollPos = localStorage.getItem('scrollPos');
+            if (scrollPos) window.scrollTo(0, scrollPos);
+
+
+            let input = document.getElementById('sort');
+            if (localStorage['sort']) {
+                input.value = localStorage['sort']; // set the value
+            }
+            input.onchange = function () {
+                localStorage['sort'] = this.value; // change localStorage on change
+                document.getElementById('sort-posts').submit();
+            }
+        });
+
+    </script>
 {% endblock %}

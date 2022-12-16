@@ -1,0 +1,348 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load hitcount_tags %}
+
+{% block title %}{{ post }}{% endblock %}
+
+{% block content %}
+    <!-- Page header with post and author details -->
+    <div class="page-heading-shows-events"
+         style="margin-top: 70px; background-image: url(
+                 {% if post.cover_photo %}
+                     {{ post.cover_photo.url }}
+                 {% else %}
+                     {% static 'images/forum_bg.jpg' %}{% endif %}
+                 );">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="post-author-info">
+                        <h5>{{ author_user_profile.user.username }}</h5>
+                        <div class="row">`
+                            <div class="col-lg-3 details-points">
+                                <div class="author-points-details"><span>{{ post.author.points }}</span>
+                                    <div class="points-thumbs-details">
+                                        <a href=""><i class="fa fa-thumbs-up t-up" aria-hidden="true"></i></a>
+                                        <a href=""><i class="fa fa-thumbs-down t-down" aria-hidden="true"></i></a>
+                                    </div>
+                                </div>
+                                {% if request.user != post.author.user %}
+                                    <div class="chat-with-author">
+                                        <a href="{% url 'chat-with-user' post.author.user.username %}"><i
+                                                class="fa fa-envelope"
+                                                aria-hidden="true"></i> Chat
+                                            with {{ post.author.username }}</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-5">
+                                <img src="
+                                {% if author_user_profile.profile_picture %}
+                                    {{ author_user_profile.profile_picture.url }}
+                                {% else %}
+                                    {% static 'images/default_profile_picture.png' %}
+                                {% endif %}" alt="{{ author_user_profile }} profile picture">
+                            </div>
+                            <div class="col-lg-4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 post-details-info">
+                    <h3>{{ post.title }}</h3>
+                    <div>Viewed: {% get_hit_count for post %} times.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="post-content">
+                    {{ post.content|safe }}
+                </div>
+            </div>
+            <!-- Add comment form -->
+            <div class="col-lg-12 comment-form">
+                <hr>
+                <br>
+                <div class="comment-form-inner">
+                    {% if request.user.is_authenticated %}
+                        <form method="POST" action="{% url 'add-comment' %}">
+                            {% csrf_token %}
+                            <textarea name="comment-content" id="id_comment_text"
+                                      placeholder="Your comment here... "></textarea>
+                            <input type="hidden" name="post-id" value="{{ post.id }}">
+                            <button type="submit" id="submit-comment">Comment</button>
+                        </form>
+                    {% else %}
+                        <h5><a href="{% url 'login' %}">Login</a> to comment</h5>
+                    {% endif %}
+                </div>
+                <br><br>
+                <hr>
+            </div>
+            <br><br>
+            <div class="comment-section">
+                {% for comment, user_profile, replies in comments_authors_and_replies %}
+                    <!-- Author's info -->
+                    <div class="col-lg-12 comment-container" id="comment-div-id-{{ comment.id }}">
+                        <div class="row">
+                            <div class="col-lg-2 comment-profile">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        {{ user_profile.user.username }}
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <img src="
+                                       {% if user_profile.profile_picture %}
+                                           {{ user_profile.profile_picture.url }}
+                                       {% else %}
+                                            {% static 'images/default_profile_picture.png' %}
+                                       {% endif %}" alt="{{ user_profile.user.username }} profile pic">
+                                    </div>
+                                    <div class="col-lg-12">
+                                        {% if request.user != comment.author.user %}
+                                            <div class="chat-comment-author chat-with-author">
+                                                <a href="{% url 'chat-with-user' comment.author.user.username %}"><i
+                                                        class="fa fa-envelope"
+                                                        aria-hidden="true"></i> Chat</a>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="comment-author-points">
+                                            <a href=""><i class="fa fa-thumbs-up t-up" aria-hidden="true"></i></a>
+                                            <span>{{ comment.author.points }}</span>
+                                            <a href=""><i class="fa fa-thumbs-down t-down"
+                                                          aria-hidden="true"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Actual Comment content -->
+                            <div class="col-lg-9 pt-3 pb-2 comment-content-div" id="{{ comment.id }}">
+                                {{ comment.content }}
+                            </div>
+
+                            <!-- Add reply to the comment -->
+                            <div class="col-lg-1">
+                                <div class="openBtn">
+                                    <button class="openButton" onclick="openTheReplyForm({{ comment.id }});">
+                                        <i class="fa fa-reply" aria-hidden="true"></i>Reply
+                                    </button>
+                                </div>
+                                <div class="comment-date">
+                                    <div>{{ comment.created_at }}</div>
+                                </div>
+                                {% if replies %}
+                                    <button type="button" class="showHideBtn" id="showHideBtn-{{ comment.id }}"
+                                            onclick="showHideReplies(this, {{ comment.id }});">
+                                        ▲ Hide Replies
+                                    </button>
+                                {% endif %}
+                                <div class="replyPopup">
+                                    <div class="formPopup" id="popupForm-{{ comment.id }}">
+                                        <form method="POST" action="{% url 'add-reply' %}" class="formContainer">
+                                            {% csrf_token %}
+                                            <h6 class="mb-2">Reply to the comment</h6>
+                                            <textarea id="replyText" name="reply" required></textarea>
+                                            <input type="hidden" name="comment-id" value="{{ comment.id }}">
+                                            <input type="hidden" name="post-slug" value="{{ post.slug }}">
+                                            <button type="submit" class="btn btn-send" id="sendReply"
+                                                    onclick="showCurrentReplies({{ comment.id }});">Send
+                                            </button>
+                                            <button type="button" class="btn cancel"
+                                                    onclick="closeTheReplyForm({{ comment.id }})">Close
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if replies %}
+                        <!-- Replies to the comment -->
+                        <div id="repliesToComment{{ comment.id }}">
+                            {% for reply, u_profile in replies %}
+                                <div class="col-lg-12 comment-container reply-container">
+                                    <div class="row">
+                                        <div class="col-lg-2 comment-profile">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    {{ u_profile.user.username }}
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <img src="
+                                       {% if u_profile.profile_picture %}
+                                           {{ u_profile.profile_picture.url }}
+                                       {% else %}
+                                            {% static 'images/default_profile_picture.png' %}
+                                       {% endif %}" alt="{{ u_profile.user.username }} profile pic">
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    {% if request.user != reply.author.user %}
+                                                        <div class="chat-comment-author chat-with-author">
+                                                            <a href="{% url 'chat-with-user' reply.author.user.username %}"><i
+                                                                    class="fa fa-envelope" style="margin-bottom: 20px;"
+                                                                    aria-hidden="true"></i> Chat</a>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <div class="comment-author-points">
+                                                        <a href=""><i class="fa fa-thumbs-up t-up"
+                                                                      aria-hidden="true"></i></a>
+                                                        <span>{{ reply.author.points }}</span>
+                                                        <a href=""><i class="fa fa-thumbs-down t-down"
+                                                                      aria-hidden="true"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Actual reply content -->
+                                        <div class="col-lg-9 pt-3 pb-2" style="overflow-y: auto;">
+                                            {{ reply.content }}
+                                        </div>
+                                        <div class="col-lg-1 reply-date">
+                                            <div>{{ reply.created_at }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <div class="pagination">
+                        <span class="step-links">
+                        {% if comments_authors_and_replies.has_previous %}
+                            <a href="?page=1">&laquo; first</a>
+                            <a href="?page={{ comments_authors_and_replies.previous_page_number }}">previous</a>
+                        {% endif %}
+
+                            <span class="current">
+                        Page {{ comments_authors_and_replies.number }} of {{ comments_authors_and_replies.paginator.num_pages }}.</span>
+
+                            {% if comments_authors_and_replies.has_next %}
+                                <a href="?page={{ comments_authors_and_replies.next_page_number }}">next</a>
+                                <a href="?page={{ comments_authors_and_replies.paginator.num_pages }}">last &raquo;</a>
+                            {% endif %}
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block additional_js %}
+    <script>
+        window.onload = hideReplies;
+
+        // scrolling back to the place before reload
+        window.onbeforeunload = function (e) {
+            localStorage.setItem('scrollPos', window.scrollY);
+        };
+
+        document.addEventListener('DOMContentLoaded', function (e) {
+            // save the scroll position on page
+            let scrollPos = window.localStorage.getItem('scrollPos');
+            if (scrollPos) window.scrollTo(0, scrollPos);
+
+            let showRepliesBtnId = window.localStorage.getItem('showRepliesBtn');
+            if (showRepliesBtnId) {
+                document.getElementById(showRepliesBtnId).click();
+                window.localStorage.removeItem(showRepliesBtnId);
+            }
+        });
+
+        document.querySelector('#submit-comment').onclick = function (e) {
+            const comment = document.querySelector('#id_comment_text').value;
+            if (comment.length < 1) {
+                alert('Comment cannot be blank');
+                return false;
+            }
+        };
+
+        document.querySelector('#sendReply').onclick = function (e) {
+            const reply = document.querySelector('#replyText').value;
+            if (reply.length < 1) {
+                alert('Reply cannot be blank');
+                return false;
+            }
+        };
+
+        function openTheReplyForm(commentId) {
+            // disabled reply buttons
+            let buttons = document.getElementsByClassName('openButton');
+            for (let i = 0; i < buttons.length; i++) {
+                let btn = buttons[i];
+                btn.disabled = true;
+            }
+
+            // open the form
+            let popupForm = document.getElementById('popupForm-' + commentId);
+            popupForm.style.display = 'block';
+
+            // accent the comment
+            let commentDiv = document.getElementById('comment-div-id-' + commentId);
+            commentDiv.style.outline = 'solid 2px #52e552';
+        }
+
+        function closeTheReplyForm(commentId) {
+            // close the form
+            let popupForm = document.getElementById('popupForm-' + commentId);
+            popupForm.style.display = 'none';
+
+            let buttons = document.getElementsByClassName('openButton');
+            for (let i = 0; i < buttons.length; i++) {
+                let btn = buttons[i];
+                btn.disabled = false;
+            }
+
+            let commentDiv = document.getElementById('comment-div-id-' + commentId);
+            commentDiv.style.outline = 'none';
+        }
+
+        function showHideReplies(button, commentId) {
+            let divId = 'repliesToComment' + commentId;
+            let x = document.getElementById(divId);
+
+            if (x.style.display === 'none') {
+                x.style.display = 'block';
+            } else {
+                x.style.display = 'none';
+            }
+            changeBtnText(button);
+        }
+
+        function changeBtnText(button) {
+            if (button.innerText === '▼ Show Replies') {
+                button.innerText = '▲ Hide Replies'
+            } else {
+                button.innerText = '▼ Show Replies'
+                window.localStorage.removeItem('showRepliesBtn');
+            }
+        }
+
+        function hideReplies() {
+            let replies = document.getElementsByClassName('showHideBtn');
+            for (let i = 0; i < replies.length; i++) {
+                replies[i].click();
+            }
+        }
+
+        function showCurrentReplies(commentId) {
+            let showHideButton = document.getElementById('showHideBtn-' + commentId);
+            localStorage.setItem('showRepliesBtn', showHideButton.id);
+        }
+
+    </script>
+{% endblock %}

@@ -62,7 +62,6 @@ span.other {
     border-radius: 3px;
     padding: 60px 30px 220px 30px;
     margin: 60px auto 170px auto;
-    width: 50%;
 }
 
 .msg-input {
@@ -110,4 +109,49 @@ span.other {
 
 .wrap-text {
     overflow-wrap: break-word;
+}
+
+
+.last-messages-list {
+    background-color: rgba(4, 120, 118, 0.84);
+    border-radius: 5px;
+    color: white;
+    height: 60px;
+    margin-bottom: 5px;
+    padding: 4px;
+}
+
+.last-messages-list:hover {
+    background-color: rgba(4, 120, 118, 0.61);
+}
+
+.l-msg-l-active {
+    background-color: rgba(4, 120, 118, 0.61);
+    border-left: solid 5px #72ea72;
+    border-right: solid 5px #72ea72;
+}
+
+.l-msg-l-active:hover {
+    color: white;
+}
+
+#chat-messages {
+    overflow-y: auto;
+    height: 500px;
+}
+
+.chat-user-img img {
+    height: 52px;
+    width: 52px;
+    border-radius: 10%;
+    outline: solid 1px white;
+}
+
+.chat-user-name-and-msg {
+    position: relative;
+    right: 25px;
+}
+
+.msg-content {
+    color: #c9c8c8;
 }
